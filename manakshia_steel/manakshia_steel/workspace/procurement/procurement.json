@@ -1,0 +1,84 @@
+{
+ "charts": [
+  {
+   "chart_name": "Monthly Purchase Value",
+   "label": "Monthly Purchase Value"
+  },
+  {
+   "chart_name": "Top Suppliers",
+   "label": "Top Suppliers"
+  }
+ ],
+ "content": "[{\"id\":\"7lGrOjOq4m\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Procurement</span>\",\"col\":12}},{\"id\":\"-DF8yajdVh\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open Purchase Orders\",\"col\":4}},{\"id\":\"CXPkGJcSdR\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pending Material Requests\",\"col\":4}},{\"id\":\"VciT8nQlnv\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Avg Monthly Spend\",\"col\":4}},{\"id\":\"wTpRDymeT-\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Monthly Purchase Value\",\"col\":12}},{\"id\":\"FWwvjKiQZl\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Top Suppliers\",\"col\":12}},{\"id\":\"fXE4WuRjdZ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Material Request\",\"col\":3}},{\"id\":\"WF2TF7v0sw\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Supplier Quotation\",\"col\":3}},{\"id\":\"GtufXH_Tmv\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Request for Quotation\",\"col\":3}},{\"id\":\"uXFqRlHEmH\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Purchase Order\",\"col\":3}}]",
+ "creation": "2025-06-18 00:41:27.996107",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "table_2",
+ "idx": 0,
+ "indicator_color": "cyan",
+ "is_hidden": 0,
+ "label": "Procurement",
+ "links": [],
+ "modified": "2025-06-18 01:16:51.630749",
+ "modified_by": "Administrator",
+ "module": "Manakshia Steel",
+ "name": "Procurement",
+ "number_cards": [
+  {
+   "label": "Open Purchase Orders",
+   "number_card_name": "Open Purchase Orders"
+  },
+  {
+   "label": "Pending Material Requests",
+   "number_card_name": "Pending Material Requests"
+  },
+  {
+   "label": "Avg Monthly Spend",
+   "number_card_name": "Avg Monthly Spend"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Material Request",
+   "link_to": "Material Request",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Red",
+   "doc_view": "List",
+   "label": "Supplier Quotation",
+   "link_to": "Supplier Quotation",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Request for Quotation",
+   "link_to": "Request for Quotation",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Pink",
+   "doc_view": "List",
+   "label": "Purchase Order",
+   "link_to": "Purchase Order",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
+ "title": "Procurement"
+}

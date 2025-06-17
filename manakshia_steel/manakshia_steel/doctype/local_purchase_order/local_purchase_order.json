@@ -1,0 +1,119 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:LPO-{####}",
+ "creation": "2025-06-06 15:47:16.565998",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "to",
+  "column_break_onbj",
+  "date",
+  "section_break_pcjv",
+  "items",
+  "section_break_pepe",
+  "payment_term",
+  "delivery_period",
+  "section_break_vpzf",
+  "net_total",
+  "shipping",
+  "column_break_fhjg",
+  "discount_percentage",
+  "grand_total"
+ ],
+ "fields": [
+  {
+   "fieldname": "to",
+   "fieldtype": "Link",
+   "label": "To",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "column_break_onbj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_pcjv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Items"
+  },
+  {
+   "fieldname": "section_break_vpzf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "net_total",
+   "fieldtype": "Data",
+   "label": "Net Total"
+  },
+  {
+   "fieldname": "discount_percentage",
+   "fieldtype": "Data",
+   "label": "Discount Percentage %"
+  },
+  {
+   "fieldname": "column_break_fhjg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shipping",
+   "fieldtype": "Data",
+   "label": "Shipping / Handling"
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Data",
+   "label": "Grand Total"
+  },
+  {
+   "fieldname": "section_break_pepe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "payment_term",
+   "fieldtype": "Link",
+   "label": "Payment Term",
+   "options": "Payment Term"
+  },
+  {
+   "fieldname": "delivery_period",
+   "fieldtype": "Data",
+   "label": "Delivery Period"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-06-06 16:18:18.826473",
+ "modified_by": "Administrator",
+ "module": "Manakshia Steel",
+ "name": "Local Purchase Order",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
