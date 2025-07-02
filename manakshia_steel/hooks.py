@@ -67,6 +67,11 @@ app_license = "mit"
 # Generators
 # ----------
 
+
+fixtures = [
+    {"dt": "Property Setter", "filters": [["name", "in", ["Purchase Receipt-custom_picking_slip-allow_bulk_edit"]]]},
+ 
+]
 # automatically create page for each record of this doctype
 # website_generators = ["Web Page"]
 
