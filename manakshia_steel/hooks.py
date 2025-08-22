@@ -248,3 +248,6 @@ fixtures = [
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+website_route_rules = [
+    {"from_route": "/login", "to_route": "login"}
+]
