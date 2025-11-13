@@ -29,12 +29,15 @@ app_license = "mit"
 # app_include_js = "/assets/manakshia_steel/js/manakshia_steel.js"
 
 app_include_js = [
-    "/assets/manakshia_steel/js/create_waybill_button.js"
-    "/assets/manakshia_steel/js/weight_matching.js"
-    "/assets/manakshia_steel/js/picking_slip.js"
-    "/assets/manakshia_steel/js/supplier_address.js"
-    "/assets/manakshia_steel/js/customer_address.js"
+    "public/js/create_waybill_button.js"
 ]
+
+doctype_js = {
+    "Supplier": "public/js/supplier_address.js",
+    "Customer": "public/js/customer_address.js",
+    "Purchase Receipt": "public/js/weight_matching.js",
+    "Picking Slip": "public/js/picking_slip.js",
+}
 
 # include js, css files in header of web template
 # web_include_css = "/assets/manakshia_steel/css/manakshia_steel.css"
