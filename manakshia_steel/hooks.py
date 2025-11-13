@@ -36,7 +36,7 @@ doctype_js = {
     "Supplier": "public/js/supplier_address.js",
     "Customer": "public/js/customer_address.js",
     "Purchase Receipt": "public/js/weight_matching.js",
-    "Picking Slip": "public/js/picking_slip.js",
+    "Purchase Receipt": "public/js/picking_slip.js",
 }
 
 # include js, css files in header of web template
