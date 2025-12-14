@@ -1,25 +1,68 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
+ "autoname": "field:process_name",
  "creation": "2025-12-13 17:27:42.038201",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_cg4f"
+  "process_name",
+  "naming_series",
+  "description",
+  "column_break_xnvj",
+  "source_warehouse",
+  "target_warehouse",
+  "is_active"
  ],
  "fields": [
   {
-   "fieldname": "section_break_cg4f",
-   "fieldtype": "Section Break"
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "label": "Process Name",
+   "unique": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Data",
+   "label": "Naming Series"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "column_break_xnvj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "source_warehouse",
+   "fieldtype": "Link",
+   "label": "Source Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "target_warehouse",
+   "fieldtype": "Link",
+   "label": "Target Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-13 17:27:42.038201",
+ "modified": "2025-12-15 01:57:53.385195",
  "modified_by": "Administrator",
  "module": "Manakshia Steel",
  "name": "Process",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
