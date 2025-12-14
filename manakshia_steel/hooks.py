@@ -35,12 +35,21 @@ doctype_js = {
     "Purchase Receipt": [
         "public/js/weight_matching.js",
         "public/js/picking_slip.js",
-        "public/js/waybill_buttons.js"
+        # "public/js/waybill_buttons.js"
     ],
 
-    "Stock Entry": "public/js/waybill_buttons.js",
+    "Stock Entry": [
+        "public/js/stock_entry_custom.js",
+        # "public/js/waybill_buttons.js"
+    ],
 
-    "Delivery Note": "public/js/waybill_buttons.js"
+    # "Delivery Note": "public/js/waybill_buttons.js"
+}
+
+doc_events = {
+    "Stock Entry": {
+        "before_submit": "manakshia_steel.api.stock_entry_custom.validate_material_receipt"
+    }
 }
 
 # include js, css files in header of web template
