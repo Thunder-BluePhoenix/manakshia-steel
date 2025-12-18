@@ -34,7 +34,7 @@ doctype_js = {
 
     "Purchase Receipt": [
         "public/js/weight_matching.js",
-        "public/js/picking_slip.js",
+        "public/js/packing_slip_custom.js",
         # "public/js/waybill_buttons.js"
     ],
 
@@ -93,7 +93,7 @@ doc_events = {
 
 
 fixtures = [
-    {"dt": "Property Setter", "filters": [["name", "in", ["Purchase Receipt-custom_picking_slip-allow_bulk_edit"]]]},
+    {"dt": "Property Setter", "filters": [["name", "in", ["Purchase Receipt-custom_packing_slip-allow_bulk_edit"]]]},
  
 ]
 # automatically create page for each record of this doctype

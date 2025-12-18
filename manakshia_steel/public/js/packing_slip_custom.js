@@ -1,4 +1,4 @@
-frappe.ui.form.on('Picking Slip', {
+frappe.ui.form.on('Packing Slip Child', {
     custom_coil: function(frm, cdt, cdn) {
         let row = locals[cdt][cdn];
 

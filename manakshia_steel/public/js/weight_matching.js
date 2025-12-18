@@ -1,10 +1,10 @@
 frappe.ui.form.on('Purchase Receipt', {
     before_save: function(frm) {
-        if (frm.doc.custom_picking_slip && frm.doc.items) {
+        if (frm.doc.custom_packing_slip && frm.doc.items) {
             let total_net_weight = 0;
 
-            // Sum all net weights from Picking Slip child table
-            (frm.doc.custom_picking_slip || []).forEach(ps_row => {
+            // Sum all net weights from Packing Slip child table
+            (frm.doc.custom_packing_slip || []).forEach(ps_row => {
                 if (ps_row.weight) {
                     total_net_weight += flt(ps_row.weight);
                 }

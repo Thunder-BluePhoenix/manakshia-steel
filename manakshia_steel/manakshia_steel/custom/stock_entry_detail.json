@@ -17,7 +17,7 @@
    "field_name": "barcode",
    "idx": 0,
    "is_system_generated": 1,
-   "modified": "2025-12-11 12:10:08.201858",
+   "modified": "2025-12-18 16:45:37.900442",
    "modified_by": "Administrator",
    "module": null,
    "name": "Stock Entry Detail-barcode-hidden",
