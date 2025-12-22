@@ -121,7 +121,7 @@ frappe.ui.form.on("Stock Entry", {
                 function () {
 
                     frappe.new_doc("Stock Entry", {
-                        stock_entry_type: "Material Receipt",   // ✅ FIX
+                        stock_entry_type: "Material Receipt",
                         custom_material_issue: frm.doc.name,
                         custom_process: frm.doc.custom_process
                     });
@@ -158,8 +158,89 @@ function set_issue_filter(frm) {
             filters: {
                 purpose: "Material Issue",
                 custom_process: frm.doc.custom_process || undefined,
-                docstatus: 1   // only submitted issues
+                docstatus: 1
             }
         };
     });
+}
+
+frappe.ui.form.on("Stock Entry", {
+    refresh(frm) {
+        // Don't show on refresh, only when purpose is changed
+        if (frm.doc.__islocal && !frm.doc.__purpose_changed) {
+            // Remove any existing label on new form
+            if (frm.page && frm.page.$title_area) {
+                frm.page.$title_area.find(".custom-stock-entry-title").remove();
+            }
+        } else {
+            update_stock_entry_header(frm);
+        }
+    },
+
+    purpose(frm) {
+        // Mark that purpose has been changed
+        frm.doc.__purpose_changed = true;
+        update_stock_entry_header(frm);
+    }
+});
+
+function update_stock_entry_header(frm) {
+    // Always remove old custom title first
+    if (frm.page && frm.page.$title_area) {
+        frm.page.$title_area.find(".custom-stock-entry-title").remove();
+    }
+
+    // Only proceed if purpose is explicitly set and is Material Issue or Material Receipt
+    if (!frm.doc.purpose || (frm.doc.purpose !== "Material Issue" && frm.doc.purpose !== "Material Receipt")) {
+        return;
+    }
+
+    if (!frm.page || !frm.page.$title_area) return;
+
+    let label = "";
+    let gradient_color = "";
+
+    if (frm.doc.purpose === "Material Issue") {
+        label = "Material Issue Entry";
+        gradient_color = "linear-gradient(135deg, #1e3a8a 0%, #6b21a8 100%)";
+    } else if (frm.doc.purpose === "Material Receipt") {
+        label = "Material Receipt Entry";
+        gradient_color = "linear-gradient(135deg, #be123c 0%, #9f1239 100%)";
+    }
+
+    if (label) {
+        const title_html = `
+            <div class="custom-stock-entry-title"
+                style="
+                    font-size: 20px;
+                    font-weight: 800;
+                    background: ${gradient_color};
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    text-transform: uppercase;
+                    letter-spacing: 1.5px;
+                    white-space: nowrap;
+                    margin-left: 200px;
+                    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    animation: fadeIn 0.5s ease-in;
+                ">
+                ${label}
+            </div>
+            <style>
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            </style>
+        `;
+
+        frm.page.$title_area.append(title_html);
+    }
 }
