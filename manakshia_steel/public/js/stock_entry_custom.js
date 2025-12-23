@@ -1,25 +1,56 @@
-// Auto-select Naming Series from Process in Stock Entry
 frappe.ui.form.on("Stock Entry", {
-    custom_process: function (frm) {
+    
+    refresh: function(frm) {
+        // Handle header title update
+        update_stock_entry_header(frm);
+        
+        // Toggle Material Issue field visibility
+        toggle_issue_field(frm);
+        
+        // Set filter for Material Issue field
+        set_issue_filter(frm);
+        
+        // Add Create Material Receipt button (separate, not under Create menu)
+        if (frm.doc.docstatus === 1 && frm.doc.purpose === "Material Issue") {
+            frm.add_custom_button(
+                "Create Receipt",
+                function() {
+                    frappe.new_doc("Stock Entry", {
+                        stock_entry_type: "Material Receipt",
+                        custom_material_issue: frm.doc.name,
+                        custom_process: frm.doc.custom_process
+                    });
+                }
+            ).addClass("btn-primary"); // Make it stand out as primary button
+        }
+    },
+
+    purpose: function(frm) {
+        // Mark that purpose has been changed
+        frm.doc.__purpose_changed = true;
+        
+        // Update header and toggle fields
+        update_stock_entry_header(frm);
+        toggle_issue_field(frm);
+        set_issue_filter(frm);
+    },
+
+    custom_process: function(frm) {
         if (!frm.doc.custom_process) return;
 
         frappe.db.get_value(
             "Process",
             frm.doc.custom_process,
             "naming_series",
-            function (r) {
+            function(r) {
                 if (r && r.naming_series) {
                     frm.set_value("naming_series", r.naming_series);
                 }
             }
         );
-    }
-});
+    },
 
-// Auto-fill Material Receipt items & remaining qty in Stock Entry
-frappe.ui.form.on("Stock Entry", {
-    custom_material_issue: function (frm) {
-
+    custom_material_issue: function(frm) {
         if (frm.doc.purpose !== "Material Receipt") return;
         if (!frm.doc.custom_material_issue) return;
 
@@ -31,22 +62,22 @@ frappe.ui.form.on("Stock Entry", {
                 doctype: "Stock Entry",
                 name: frm.doc.custom_material_issue
             },
-            callback: function (r) {
+            callback: function(r) {
                 if (!r.message) return;
 
                 let issue = r.message;
 
-                // copy process from Issue
+                // Copy process from Issue
                 frm.set_value("custom_process", issue.custom_process);
 
-                // total issued qty
+                // Calculate total issued qty
                 let issued_qty = {};
                 issue.items.forEach(row => {
                     let key = row.item_code + "::" + (row.batch_no || "");
                     issued_qty[key] = (issued_qty[key] || 0) + row.qty;
                 });
 
-                // already received qty
+                // Get already received qty
                 frappe.call({
                     method: "frappe.client.get_list",
                     args: {
@@ -58,8 +89,7 @@ frappe.ui.form.on("Stock Entry", {
                         },
                         fields: ["name"]
                     },
-                    callback: function (res) {
-
+                    callback: function(res) {
                         let received_qty = {};
                         let promises = [];
 
@@ -71,20 +101,17 @@ frappe.ui.form.on("Stock Entry", {
                                 }).then(doc => {
                                     doc.items.forEach(row => {
                                         let key = row.item_code + "::" + (row.batch_no || "");
-                                        received_qty[key] =
-                                            (received_qty[key] || 0) + row.qty;
+                                        received_qty[key] = (received_qty[key] || 0) + row.qty;
                                     });
                                 })
                             );
                         });
 
                         Promise.all(promises).then(() => {
-
+                            // Add items with remaining qty
                             issue.items.forEach(row => {
                                 let key = row.item_code + "::" + (row.batch_no || "");
-                                let remaining =
-                                    (issued_qty[key] || 0) -
-                                    (received_qty[key] || 0);
+                                let remaining = (issued_qty[key] || 0) - (received_qty[key] || 0);
 
                                 if (remaining > 0) {
                                     let r = frm.add_child("items");
@@ -107,44 +134,7 @@ frappe.ui.form.on("Stock Entry", {
     }
 });
 
-// Create Material Receipt button
-frappe.ui.form.on("Stock Entry", {
-    refresh: function (frm) {
-
-        if (
-            frm.doc.docstatus === 1 &&
-            frm.doc.purpose === "Material Issue"
-        ) {
-
-            frm.add_custom_button(
-                "Create Material Receipt",
-                function () {
-
-                    frappe.new_doc("Stock Entry", {
-                        stock_entry_type: "Material Receipt",
-                        custom_material_issue: frm.doc.name,
-                        custom_process: frm.doc.custom_process
-                    });
-
-                },
-                __("Create")
-            );
-        }
-    }
-});
-
-// Show/hide Material Issue field based on Purpose
-frappe.ui.form.on("Stock Entry", {
-    refresh: function (frm) {
-        toggle_issue_field(frm);
-        set_issue_filter(frm);
-    },
-
-    purpose: function (frm) {
-        toggle_issue_field(frm);
-        set_issue_filter(frm);
-    }
-});
+// Helper Functions
 
 function toggle_issue_field(frm) {
     let show = frm.doc.purpose === "Material Receipt";
@@ -153,7 +143,7 @@ function toggle_issue_field(frm) {
 }
 
 function set_issue_filter(frm) {
-    frm.set_query("custom_material_issue", function () {
+    frm.set_query("custom_material_issue", function() {
         return {
             filters: {
                 purpose: "Material Issue",
@@ -164,34 +154,20 @@ function set_issue_filter(frm) {
     });
 }
 
-frappe.ui.form.on("Stock Entry", {
-    refresh(frm) {
-        // Don't show on refresh, only when purpose is changed
-        if (frm.doc.__islocal && !frm.doc.__purpose_changed) {
-            // Remove any existing label on new form
-            if (frm.page && frm.page.$title_area) {
-                frm.page.$title_area.find(".custom-stock-entry-title").remove();
-            }
-        } else {
-            update_stock_entry_header(frm);
-        }
-    },
-
-    purpose(frm) {
-        // Mark that purpose has been changed
-        frm.doc.__purpose_changed = true;
-        update_stock_entry_header(frm);
-    }
-});
-
 function update_stock_entry_header(frm) {
-    // Always remove old custom title first
+    // Remove old custom title first
     if (frm.page && frm.page.$title_area) {
         frm.page.$title_area.find(".custom-stock-entry-title").remove();
     }
 
-    // Only proceed if purpose is explicitly set and is Material Issue or Material Receipt
-    if (!frm.doc.purpose || (frm.doc.purpose !== "Material Issue" && frm.doc.purpose !== "Material Receipt")) {
+    // Don't show on refresh for new forms until purpose is changed
+    if (frm.doc.__islocal && !frm.doc.__purpose_changed) {
+        return;
+    }
+
+    // Only proceed if purpose is Material Issue or Material Receipt
+    if (!frm.doc.purpose || 
+        (frm.doc.purpose !== "Material Issue" && frm.doc.purpose !== "Material Receipt")) {
         return;
     }
 
@@ -205,7 +181,7 @@ function update_stock_entry_header(frm) {
         gradient_color = "linear-gradient(135deg, #1e3a8a 0%, #6b21a8 100%)";
     } else if (frm.doc.purpose === "Material Receipt") {
         label = "Material Receipt Entry";
-        gradient_color = "linear-gradient(135deg, #be123c 0%, #9f1239 100%)";
+        gradient_color = "linear-gradient(135deg, #129f41ff 0%, #12be5aff 100%)";
     }
 
     if (label) {
