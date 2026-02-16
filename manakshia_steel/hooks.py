@@ -35,20 +35,37 @@ doctype_js = {
     "Purchase Receipt": [
         "public/js/weight_matching.js",
         "public/js/packing_slip_custom.js",
-        # "public/js/waybill_buttons.js"
+        "public/js/waybill_buttons.js",
+        "public/js/warehouse_conflict_fix.js",
+		"public/js/force_grid_button_visible.js"
     ],
 
     "Stock Entry": [
         "public/js/stock_entry_custom.js",
-        # "public/js/waybill_buttons.js"
+        "public/js/waybill_buttons.js",
+        "public/js/warehouse_conflict_fix.js",
+        "public/js/packing_slip_custom.js",
+		"public/js/force_grid_button_visible.js"
     ],
 
-    # "Delivery Note": "public/js/waybill_buttons.js"
+    "Delivery Note": [
+        "public/js/waybill_buttons.js",
+        "public/js/force_grid_button_visible.js"
+    ],
+
+    "Subcontracting Receipt": "public/js/warehouse_conflict_fix.js"
 }
 
 doc_events = {
     "Stock Entry": {
-        "before_submit": "manakshia_steel.api.stock_entry_custom.validate_material_receipt"
+        "before_submit": "manakshia_steel.api.stock_entry_custom.validate_material_receipt",
+        "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict"
+    },
+    "Purchase Receipt": {
+        "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict"
+    },
+    "Subcontracting Receipt": {
+        "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict"
     }
 }
 
@@ -91,11 +108,18 @@ doc_events = {
 # Generators
 # ----------
 
-
 fixtures = [
-    {"dt": "Property Setter", "filters": [["name", "in", ["Purchase Receipt-custom_packing_slip-allow_bulk_edit"]]]},
- 
+    {
+        "dt": "Property Setter",
+        "filters": [
+            ["name", "in", ["Purchase Receipt-custom_packing_slip-allow_bulk_edit"]]
+        ]
+    },
+    {
+        "dt": "Custom HTML Block"
+    }
 ]
+
 # automatically create page for each record of this doctype
 # website_generators = ["Web Page"]
 

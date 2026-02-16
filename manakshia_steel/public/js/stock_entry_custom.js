@@ -1,20 +1,20 @@
 frappe.ui.form.on("Stock Entry", {
-    
-    refresh: function(frm) {
+
+    refresh: function (frm) {
         // Handle header title update
         update_stock_entry_header(frm);
-        
+
         // Toggle Material Issue field visibility
         toggle_issue_field(frm);
-        
+
         // Set filter for Material Issue field
         set_issue_filter(frm);
-        
+
         // Add Create Material Receipt button (separate, not under Create menu)
         if (frm.doc.docstatus === 1 && frm.doc.purpose === "Material Issue") {
             frm.add_custom_button(
                 "Create Receipt",
-                function() {
+                function () {
                     frappe.new_doc("Stock Entry", {
                         stock_entry_type: "Material Receipt",
                         custom_material_issue: frm.doc.name,
@@ -25,24 +25,24 @@ frappe.ui.form.on("Stock Entry", {
         }
     },
 
-    purpose: function(frm) {
+    purpose: function (frm) {
         // Mark that purpose has been changed
         frm.doc.__purpose_changed = true;
-        
+
         // Update header and toggle fields
         update_stock_entry_header(frm);
         toggle_issue_field(frm);
         set_issue_filter(frm);
     },
 
-    custom_process: function(frm) {
+    custom_process: function (frm) {
         if (!frm.doc.custom_process) return;
 
         frappe.db.get_value(
             "Process",
             frm.doc.custom_process,
             "naming_series",
-            function(r) {
+            function (r) {
                 if (r && r.naming_series) {
                     frm.set_value("naming_series", r.naming_series);
                 }
@@ -50,7 +50,16 @@ frappe.ui.form.on("Stock Entry", {
         );
     },
 
-    custom_material_issue: function(frm) {
+    validate: function (frm) {
+        // Force allow zero valuation rate for all items
+        if (frm.doc.items) {
+            frm.doc.items.forEach(row => {
+                frappe.model.set_value(row.doctype, row.name, "allow_zero_valuation_rate", 1);
+            });
+        }
+    },
+
+    custom_material_issue: function (frm) {
         if (frm.doc.purpose !== "Material Receipt") return;
         if (!frm.doc.custom_material_issue) return;
 
@@ -62,7 +71,7 @@ frappe.ui.form.on("Stock Entry", {
                 doctype: "Stock Entry",
                 name: frm.doc.custom_material_issue
             },
-            callback: function(r) {
+            callback: function (r) {
                 if (!r.message) return;
 
                 let issue = r.message;
@@ -89,7 +98,7 @@ frappe.ui.form.on("Stock Entry", {
                         },
                         fields: ["name"]
                     },
-                    callback: function(res) {
+                    callback: function (res) {
                         let received_qty = {};
                         let promises = [];
 
@@ -122,6 +131,7 @@ frappe.ui.form.on("Stock Entry", {
                                     r.stock_uom = row.stock_uom || row.uom;
                                     r.conversion_factor = 1;
                                     r.transfer_qty = r.qty * r.conversion_factor;
+                                    r.allow_zero_valuation_rate = 1; // Explicitly allow zero valuation
                                 }
                             });
 
@@ -143,7 +153,7 @@ function toggle_issue_field(frm) {
 }
 
 function set_issue_filter(frm) {
-    frm.set_query("custom_material_issue", function() {
+    frm.set_query("custom_material_issue", function () {
         return {
             filters: {
                 purpose: "Material Issue",
@@ -166,7 +176,7 @@ function update_stock_entry_header(frm) {
     }
 
     // Only proceed if purpose is Material Issue or Material Receipt
-    if (!frm.doc.purpose || 
+    if (!frm.doc.purpose ||
         (frm.doc.purpose !== "Material Issue" && frm.doc.purpose !== "Material Receipt")) {
         return;
     }

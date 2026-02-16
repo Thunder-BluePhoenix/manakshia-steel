@@ -1,160 +1,275 @@
-
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Login | Manaksia Steels Limited</title>
+<html lang="en">
 
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap" rel="stylesheet">
-    
+<head>
+    <meta charset="UTF-8" />
+    <title>Login | Manaksia Steels Limited</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Lato", sans-serif;
+            font-family: "Inter", sans-serif;
         }
 
         body {
-            display: flex;
             height: 100vh;
-        }
-
-        .left-side {
-            width: 60%;
-            background-image: url('/assets/manakshia_steel/images/background2.jpg');
-            background-size: cover;
-            background-position: center;
-            border-radius: 0 20px 20px 0;
-
-        }
-
-        .right-side {
-            flex: 1;
-            background-color: #ffffff;
+            width: 100vw;
+            /* Reverted to Radial Gradient with Manaksia Red/Blue tones */
+            background: radial-gradient(60% 40% at bottom, #2E3D92 0%, #000 70%);
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 40px;
+            justify-content: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .login-wrapper {
+            margin-bottom: 12px;
         }
 
         .logo {
-            width: 300px;
-            height: auto;
+            width: 200px;
+            background: white;
+            /* padding: 10px 10px; */
+            border-radius: 16px;
+            /* border: 2px solid rgba(255, 255, 255, 0.3); */
+        }
+
+        /* login card - Glassmorphism Restored */
+        .auth-card {
+            width: 90%;
+            max-width: 600px;
+            background: linear-gradient(180deg,
+                    rgb(255 255 255 / 10%),
+                    rgb(255 255 255 / 5%));
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px 30px 20px 30px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Title */
+        h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .auth-card p {
+            font-size: 14px;
+            color: #ccc;
             margin-bottom: 30px;
         }
 
-        .login-box {
-            width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+            margin-bottom: 24px;
         }
 
-        .login-box h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .login-box p {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .login-box input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .checkbox-row input {
-            margin-right: 8px;
-        }
-
-        .login-box button {
-            width: 100%;
-            padding: 12px;
-            background-color: #000;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .footer {
-            margin-top: 30px;
+        .input-group label {
             font-size: 12px;
-            color: #666;
+            font-weight: 500;
+            margin-bottom: 6px;
+            display: block;
+            color: #ddd;
+        }
+
+        /* White Inputs as requested */
+        .input,
+        .select {
+            width: 100%;
+            padding: 12px 15px;
+            background: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #000;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 10px auto;
+        }
+
+        .input:focus,
+        .select:focus {
+            border-color: #2E3D92;
+            box-shadow: 0 0 0 3px rgba(46, 61, 146, 0.4);
+        }
+
+        .input::placeholder {
+            color: #888;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+        }
+
+        /* Button */
+        .primary-btnn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            color: #fff;
+            /* Gradient Button fitting Manaksia */
+            background: linear-gradient(90deg, #2E3D92, #D41F26);
+            /* box-shadow: 0 4px 15px rgba(212, 31, 38, 0.4); */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .primary-btnn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 31, 38, 0.45);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 24px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
             text-align: center;
         }
 
-        .footer span {
-            font-weight: bold;
-            color: #000;
+        .footer strong {
+            color: #fff;
         }
 
-        @media (max-width: 768px) {
-            .left-side {
-                display: none;
+        /* Responsive */
+        @media (max-width: 600px) {
+            .input-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
             }
-            .right-side {
-                flex: 1;
+
+            .auth-card {
+                padding: 30px 20px;
             }
         }
     </style>
 </head>
+
 <body>
-
-    <div class="left-side"></div>
-
-    <div class="right-side">
+    <div class="login-wrapper">
         <img class="logo" src="/assets/manakshia_steel/images/manaksia_logo.png" alt="Manaksia Steels Limited" />
-        
-        <div class="login-box">
-            <h2>Login</h2>
-            <p>welcome to your workspace</p>
-            <form method="POST" action="/api/method/login">
-                <input type="text" name="usr" placeholder="user id" required />
-                <input type="password" name="pwd" placeholder="password" required />
-                <button type="submit">Login</button>
-            </form>
-        </div>
-
-        <div class="footer">
-            <img src="/assets/manakshia_steel/images/indware-digital.png" width="150" style="margin-top: 20px;"><br>
-            Powered By Indware Digital
-        </div>
     </div>
+    <div class="auth-card">
+        <h2>Welcome Back</h2>
+        <p>Login to access your workspace</p>
 
-        <script>
-        document.querySelector("form").addEventListener("submit", function (e) {
+        <form id="loginForm">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Warehouse</label>
+                    <select name="warehouse" class="select" required>
+                        <option value="" disabled selected>Select Warehouse</option>
+                        {% for warehouse in warehouses %}
+                        <option value="{{ warehouse.name }}">{{ warehouse.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Fiscal Year</label>
+                    <select name="fiscal_year" class="select" required>
+                        <option value="" disabled selected>Select Fiscal Year</option>
+                        {% for year in fiscal_years %}
+                        <option value="{{ year.name }}">{{ year.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>User ID</label>
+                    <input type="text" name="usr" class="input" placeholder="Enter User ID" required />
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <div class="password-container">
+                        <input type="password" name="pwd" id="password" class="input" placeholder="Enter Password"
+                            required />
+                        <i class="fas fa-eye toggle-password" id="eyeIcon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="primary-btnn">Login</button>
+
+            <div id="login-message" style="margin-top: 15px; color: #ff6b6b; font-size: 13px; min-height: 20px;"></div>
+        </form>
+    </div>
+    <div class="footer">
+        <div>Powered by <strong>Indware Digital</strong></div>
+    </div>
+    <script>
+        const togglePassword = document.getElementById("eyeIcon");
+        const password = document.getElementById("password");
+
+        togglePassword.addEventListener("click", () => {
+            const isPassword = password.type === "password";
+            password.type = isPassword ? "text" : "password";
+            togglePassword.classList.toggle("fa-eye-slash");
+        });
+
+        document.getElementById("loginForm").addEventListener("submit", function (e) {
             e.preventDefault();
-            const form = e.target;
 
-            fetch("/api/method/login", {
+            const messageEl = document.getElementById("login-message");
+            messageEl.innerText = "";
+
+            const formData = new FormData(this);
+
+            fetch("/api/method/manakshia_steel.api.auth.login", {
                 method: "POST",
-                body: new FormData(form),
-                credentials: "same-origin"
+                body: formData,
             })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.message === "Logged In") {
-                        window.location.href = "/app";  // ✅ go to app after login
+                    if (data.message && data.message.message === "Logged In") {
+                        window.location.href = "/app";
+                    } else if (data.message && data.message.message) {
+                        messageEl.innerText = data.message.message;
                     } else {
-                        alert("Invalid username or password");
+                        messageEl.innerText = "Login failed. Please check your credentials.";
                     }
                 })
                 .catch(err => {
-                    alert("Login failed. Try again.");
+                    console.error(err);
+                    messageEl.innerText = "An error occurred. Please try again.";
                 });
         });
     </script>
-
 </body>
+
 </html>
