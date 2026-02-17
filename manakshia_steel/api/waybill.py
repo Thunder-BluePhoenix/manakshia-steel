@@ -159,8 +159,18 @@ def get_vehicle_no(doc):
 # =====================================================================
 
 def get_address_display(address_name):
-    if not address_name: return None
-    return frappe.db.get_value("Address", address_name, "display") or address_name
+    """Get formatted address display using Frappe's utility."""
+    if not address_name:
+        return None
+    
+    # Use Frappe's built-in address formatting
+    from frappe.contacts.doctype.address.address import get_address_display as frappe_get_address_display
+    
+    try:
+        return frappe_get_address_display(frappe.get_doc("Address", address_name).as_dict())
+    except Exception:
+        # Fallback to just the address name if formatting fails
+        return address_name
 
 def populate_items(waybill, items, is_stock_entry=False):
     for it in items:
