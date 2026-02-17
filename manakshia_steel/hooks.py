@@ -37,7 +37,7 @@ doctype_js = {
         "public/js/packing_slip_custom.js",
         "public/js/waybill_buttons.js",
         "public/js/warehouse_conflict_fix.js",
-		"public/js/force_grid_button_visible.js"
+		"public/js/serial_batch_bundle_fix.js"
     ],
 
     "Stock Entry": [
@@ -45,12 +45,12 @@ doctype_js = {
         "public/js/waybill_buttons.js",
         "public/js/warehouse_conflict_fix.js",
         "public/js/packing_slip_custom.js",
-		"public/js/force_grid_button_visible.js"
+		"public/js/serial_batch_bundle_fix.js"
     ],
 
     "Delivery Note": [
         "public/js/waybill_buttons.js",
-        "public/js/force_grid_button_visible.js"
+        "public/js/serial_batch_bundle_fix.js"
     ],
 
     "Subcontracting Receipt": "public/js/warehouse_conflict_fix.js"

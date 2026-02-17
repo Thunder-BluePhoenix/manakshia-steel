@@ -198,7 +198,7 @@ function update_stock_entry_header(frm) {
         const title_html = `
             <div class="custom-stock-entry-title"
                 style="
-                    font-size: 20px;
+                    font-size: 16px;
                     font-weight: 800;
                     background: ${gradient_color};
                     -webkit-background-clip: text;
@@ -207,7 +207,7 @@ function update_stock_entry_header(frm) {
                     text-transform: uppercase;
                     letter-spacing: 1.5px;
                     white-space: nowrap;
-                    margin-left: 200px;
+                    margin-left: 10px;
                     text-shadow: 0 2px 4px rgba(0,0,0,0.1);
                     animation: fadeIn 0.5s ease-in;
                 ">
