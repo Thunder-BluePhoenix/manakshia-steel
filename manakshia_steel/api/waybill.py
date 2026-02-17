@@ -159,7 +159,7 @@ def get_vehicle_no(doc):
 # =====================================================================
 
 def get_address_display(address_name):
-    """Get formatted address display using Frappe's utility."""
+    """Get formatted address display as plain text."""
     if not address_name:
         return None
     
@@ -167,7 +167,15 @@ def get_address_display(address_name):
     from frappe.contacts.doctype.address.address import get_address_display as frappe_get_address_display
     
     try:
-        return frappe_get_address_display(frappe.get_doc("Address", address_name).as_dict())
+        # Get HTML formatted address
+        html_address = frappe_get_address_display(frappe.get_doc("Address", address_name).as_dict())
+        
+        # Convert HTML <br> tags to newlines for plain text display
+        if html_address:
+            plain_address = html_address.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
+            return plain_address
+        
+        return address_name
     except Exception:
         # Fallback to just the address name if formatting fails
         return address_name
