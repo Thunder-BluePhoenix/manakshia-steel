@@ -32,6 +32,8 @@ doctype_js = {
     "Supplier": "public/js/supplier_address.js",
     "Customer": "public/js/customer_address.js",
 
+    "Material Request": "public/js/material_request.js",
+
     "Purchase Receipt": [
         "public/js/weight_matching.js",
         "public/js/packing_slip_custom.js",
