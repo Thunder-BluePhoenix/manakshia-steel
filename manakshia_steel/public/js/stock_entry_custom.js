@@ -10,6 +10,9 @@ frappe.ui.form.on("Stock Entry", {
         // Set filter for Material Issue field
         set_issue_filter(frm);
 
+        // Default warehouse logic
+        set_default_warehouses(frm, false);
+
         // Add Create Material Receipt button (separate, not under Create menu)
         if (frm.doc.docstatus === 1 && frm.doc.purpose === "Material Issue") {
             frm.add_custom_button(
@@ -33,6 +36,9 @@ frappe.ui.form.on("Stock Entry", {
         update_stock_entry_header(frm);
         toggle_issue_field(frm);
         set_issue_filter(frm);
+
+        // Trigger warehouse defaults
+        set_default_warehouses(frm, true);
     },
 
     custom_process: function (frm) {
@@ -230,3 +236,67 @@ function update_stock_entry_header(frm) {
         frm.page.$title_area.append(title_html);
     }
 }
+
+function set_default_warehouses(frm, overwrite) {
+    if (frm.doc.docstatus !== 0) return;
+
+    // Only for Material Issue/Receipt
+    if (frm.doc.purpose !== 'Material Issue' && frm.doc.purpose !== 'Material Receipt') return;
+
+    // Get User's Default Warehouse (or system default)
+    let user_default_warehouse = frappe.defaults.get_default("warehouse");
+
+    // Find Goods In Transit warehouse dynamically
+    if (frm.custom_transit_warehouse) {
+        apply_warehouse_default(frm, frm.custom_transit_warehouse, user_default_warehouse, overwrite);
+    } else {
+        frappe.call({
+            method: 'frappe.client.get_value',
+            args: {
+                doctype: 'Warehouse',
+                filters: { name: ['like', '%Transit%'] },
+                fieldname: 'name'
+            },
+            callback: function (r) {
+                if (r.message && r.message.name) {
+                    frm.custom_transit_warehouse = r.message.name;
+                    apply_warehouse_default(frm, frm.custom_transit_warehouse, user_default_warehouse, overwrite);
+                }
+            }
+        });
+    }
+}
+
+function apply_warehouse_default(frm, transit_warehouse, user_default_warehouse, overwrite) {
+    if (frm.doc.purpose === 'Material Issue') {
+        // Material Issue: Source = User Default, Target = GIT
+
+        // Set Target Warehouse to GIT
+        if (!frm.doc.to_warehouse || overwrite) {
+            frm.set_value('to_warehouse', transit_warehouse);
+        }
+
+        // Set Source Warehouse to User Default
+        if (user_default_warehouse) {
+            if (!frm.doc.from_warehouse || overwrite) {
+                frm.set_value('from_warehouse', user_default_warehouse);
+            }
+        }
+    } else if (frm.doc.purpose === 'Material Receipt') {
+        // Material Receipt: Source = GIT, Target = User Default
+
+        // Set Source Warehouse from GIT
+        if (!frm.doc.from_warehouse || overwrite) {
+            frm.set_value('from_warehouse', transit_warehouse);
+        }
+
+        // Set Target Warehouse to User Default
+        if (user_default_warehouse) {
+            if (!frm.doc.to_warehouse || overwrite) {
+                frm.set_value('to_warehouse', user_default_warehouse);
+            }
+        }
+    }
+}
+
+
