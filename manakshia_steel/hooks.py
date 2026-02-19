@@ -26,7 +26,7 @@ app_license = "mit"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/manakshia_steel/css/manakshia_steel.css"
-# app_include_js = "/assets/manakshia_steel/js/manakshia_steel.js"
+app_include_js = "/assets/manakshia_steel/js/child_table_auto_row.js"
 
 doctype_js = {
     "Supplier": "public/js/supplier_address.js",
