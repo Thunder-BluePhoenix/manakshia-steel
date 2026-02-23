@@ -20,8 +20,8 @@
         body {
             height: 100vh;
             width: 100vw;
-            /* Reverted to Radial Gradient with Manaksia Red/Blue tones */
-            background: radial-gradient(60% 40% at bottom, #2E3D92 0%, #000 70%);
+            /* Reverted to original gradient */
+            background: linear-gradient(135deg, #0f172a 0%, #2E3D92 50%, #D41F26 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -35,7 +35,7 @@
         }
 
         .logo {
-            width: 200px;
+            width: 280px;
             background: white;
             /* padding: 10px 10px; */
             border-radius: 16px;
@@ -114,6 +114,16 @@
             box-shadow: 0 0 0 3px rgba(46, 61, 146, 0.4);
         }
 
+        .select option {
+            color: #000;
+            background: #fff;
+        }
+
+        .select option[disabled] {
+            color: #000;
+            /* Ensure the placeholder option also has black text */
+        }
+
         .input::placeholder {
             color: #888;
         }
@@ -190,9 +200,9 @@
         <form id="loginForm">
             <div class="input-grid">
                 <div class="input-group">
-                    <label>Warehouse</label>
+                    <label>Unit</label>
                     <select name="warehouse" class="select" required>
-                        <option value="" disabled selected>Select Warehouse</option>
+                        <option value="" disabled selected hidden>Select Unit</option>
                         {% for warehouse in warehouses %}
                         <option value="{{ warehouse.name }}">{{ warehouse.name }}</option>
                         {% endfor %}
@@ -202,7 +212,7 @@
                 <div class="input-group">
                     <label>Fiscal Year</label>
                     <select name="fiscal_year" class="select" required>
-                        <option value="" disabled selected>Select Fiscal Year</option>
+                        <option value="" disabled selected hidden>Select Fiscal Year</option>
                         {% for year in fiscal_years %}
                         <option value="{{ year.name }}">{{ year.name }}</option>
                         {% endfor %}
