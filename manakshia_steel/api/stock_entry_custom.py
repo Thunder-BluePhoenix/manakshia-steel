@@ -6,7 +6,9 @@ def validate_material_receipt(doc, method):
         return
 
     if not doc.custom_material_issue:
-        frappe.throw("Material Receipt must be linked to a Material Issue")
+        # -- Previous implementation --
+        # frappe.throw("Material Receipt must be linked to a Material Issue")
+        return  # Allow standalone Material Receipts
 
     issue = frappe.get_doc("Stock Entry", doc.custom_material_issue)
 

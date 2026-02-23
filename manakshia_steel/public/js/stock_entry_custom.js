@@ -155,7 +155,11 @@ frappe.ui.form.on("Stock Entry", {
 function toggle_issue_field(frm) {
     let show = frm.doc.purpose === "Material Receipt";
     frm.toggle_display("custom_material_issue", show);
-    frm.toggle_reqd("custom_material_issue", show);
+    // -- Previous Implementation -- 
+    // frm.toggle_reqd("custom_material_issue", show);
+
+    // Removed strict mandatory requirement so Material Receipts can be standalone
+    frm.toggle_reqd("custom_material_issue", false);
 }
 
 function set_issue_filter(frm) {
