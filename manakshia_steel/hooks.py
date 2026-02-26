@@ -26,49 +26,68 @@ app_license = "mit"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/manakshia_steel/css/manakshia_steel.css"
-app_include_js = "/assets/manakshia_steel/js/child_table_auto_row.js"
+app_include_js = [
+    "/assets/manakshia_steel/js/child_table_auto_row.js",
+    "/assets/manakshia_steel/js/fiscal_year_defaults.js",
+]
 
 doctype_js = {
     "Supplier": "public/js/supplier_address.js",
     "Customer": "public/js/customer_address.js",
-
     "Material Request": "public/js/material_request.js",
-
     "Purchase Receipt": [
         "public/js/weight_matching.js",
         "public/js/packing_slip_custom.js",
         "public/js/waybill_buttons.js",
         "public/js/warehouse_conflict_fix.js",
-		"public/js/serial_batch_bundle_fix.js"
+        "public/js/serial_batch_bundle_fix.js",
     ],
-
     "Stock Entry": [
         "public/js/stock_entry_custom.js",
         "public/js/waybill_buttons.js",
         "public/js/warehouse_conflict_fix.js",
         "public/js/packing_slip_custom.js",
-		"public/js/serial_batch_bundle_fix.js"
     ],
-
     "Delivery Note": [
         "public/js/waybill_buttons.js",
-        "public/js/serial_batch_bundle_fix.js"
+        "public/js/serial_batch_bundle_fix.js",
     ],
-
-    "Subcontracting Receipt": "public/js/warehouse_conflict_fix.js"
+    "Subcontracting Receipt": "public/js/warehouse_conflict_fix.js",
 }
 
+_fix_naming_year = "manakshia_steel.api.fiscal_year_hooks.fix_naming_year"
+
+# NOTE: Only ONE doc_events dict is allowed in hooks.py.
+# A second dict silently overwrites the first (Python dict re-assignment).
+# All events are merged here.
 doc_events = {
     "Stock Entry": {
+        "before_naming": _fix_naming_year,
+        "before_validate": [
+            "manakshia_steel.api.stock_entry_custom.suppress_serial_batch_on_stock_entry",
+            "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict",
+        ],
         "before_submit": "manakshia_steel.api.stock_entry_custom.validate_material_receipt",
-        "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict"
     },
     "Purchase Receipt": {
-        "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict"
+        "before_naming": _fix_naming_year,
+        "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict",
+    },
+    "Delivery Note": {
+        "before_naming": _fix_naming_year,
+    },
+    "Purchase Order": {
+        "before_naming": _fix_naming_year,
+    },
+    "Material Request": {
+        "before_naming": _fix_naming_year,
+    },
+    "Supplier Quotation": {
+        "before_naming": _fix_naming_year,
     },
     "Subcontracting Receipt": {
-        "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict"
-    }
+        "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict",
+    },
 }
 
 # include js, css files in header of web template
@@ -115,11 +134,9 @@ fixtures = [
         "dt": "Property Setter",
         "filters": [
             ["name", "in", ["Purchase Receipt-custom_packing_slip-allow_bulk_edit"]]
-        ]
+        ],
     },
-    {
-        "dt": "Custom HTML Block"
-    }
+    {"dt": "Custom HTML Block"},
 ]
 
 # automatically create page for each record of this doctype
@@ -170,35 +187,35 @@ fixtures = [
 
 # Permissions
 # -----------
-# Permissions evaluated in scripted ways
+# Restricts list views and reports to the user's logged-in fiscal year.
+# System Manager / Administrator are exempt and see all years.
 
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
-#
-# has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
-# }
+_pqc = "manakshia_steel.api.fiscal_year_filter"
+
+permission_query_conditions = {
+    "Stock Entry": f"{_pqc}.pqc_stock_entry",
+    "Purchase Receipt": f"{_pqc}.pqc_purchase_receipt",
+    "Delivery Note": f"{_pqc}.pqc_delivery_note",
+    "Purchase Order": f"{_pqc}.pqc_purchase_order",
+    "Material Request": f"{_pqc}.pqc_material_request",
+    "Supplier Quotation": f"{_pqc}.pqc_supplier_quotation",
+    "Purchase Invoice": f"{_pqc}.pqc_purchase_invoice",
+    "Stock Ledger Entry": f"{_pqc}.pqc_stock_ledger_entry",
+}
 
 # DocType Class
 # ---------------
 # Override standard doctype classes
-
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+    "Stock Entry": "manakshia_steel.overrides.stock_entry.CustomStockEntry"
+}
 
 # Document Events
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+# _fix_naming_year is defined above, near doc_events where it is first used.
+# (All doc_events hooks are in the single dict above.)
 
 
 # Scheduled Tasks

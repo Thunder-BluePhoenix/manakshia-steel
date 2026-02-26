@@ -1,204 +1,216 @@
 {
- "actions": [],
- "allow_auto_repeat": 0,
- "allow_copy": 0,
- "allow_events_in_timeline": 0,
- "allow_guest_to_view": 0,
- "allow_import": 0,
- "allow_rename": 1,
- "autoname": "naming_series:",
- "beta": 0,
- "creation": "2025-09-01 09:35:06.263085",
- "custom": 1,
- "default_print_format": "Waybill Print",
- "docstatus": 0,
- "doctype": "DocType",
- "document_type": "",
- "editable_grid": 1,
- "email_append_to": 0,
- "engine": "InnoDB",
- "fields": [
-  {
-   "fieldname": "customer_name",
-   "fieldtype": "Link",
-   "label": "Customer Name",
-   "options": "Supplier"
-  },
-  {
-   "fieldname": "customer_address",
-   "fieldtype": "Small Text",
-   "label": "Customer Address"
-  },
-  {
-   "fieldname": "buyers_order_no",
-   "fieldtype": "Data",
-   "label": "Buyer's Order No."
-  },
-  {
-   "fieldname": "sales_order_no",
-   "fieldtype": "Link",
-   "label": "Sales Order No.",
-   "options": "Sales Order"
-  },
-  {
-   "fieldname": "column_break_dpbz",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "date",
-   "fieldtype": "Date",
-   "label": "Date"
-  },
-  {
-   "fieldname": "remarks",
-   "fieldtype": "Small Text",
-   "label": "Remarks"
-  },
-  {
-   "fieldname": "from_warehouse",
-   "fieldtype": "Link",
-   "label": "From Warehouse",
-   "options": "Warehouse"
-  },
-  {
-   "fieldname": "to_warehouse",
-   "fieldtype": "Link",
-   "label": "To Warehouse",
-   "options": "Warehouse"
-  },
-  {
-   "fieldname": "vehicle_details_section",
-   "fieldtype": "Section Break",
-   "label": "Vehicle Details"
-  },
-  {
-   "fieldname": "vehicle_no",
-   "fieldtype": "Data",
-   "label": "Vehicle No."
-  },
-  {
-   "fieldname": "delivery_order_no",
-   "fieldtype": "Data",
-   "label": "Delivery Order No."
-  },
-  {
-   "fieldname": "authorized_by",
-   "fieldtype": "Data",
-   "label": "Authorized By"
-  },
-  {
-   "fieldname": "column_break_jqnm",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "start_time",
-   "fieldtype": "Datetime",
-   "label": "Start Time"
-  },
-  {
-   "fieldname": "end_time",
-   "fieldtype": "Datetime",
-   "label": "End Time"
-  },
-  {
-   "fieldname": "items_section",
-   "fieldtype": "Section Break",
-   "label": "Items"
-  },
-  {
-   "fieldname": "items",
-   "fieldtype": "Table",
-   "label": "Items",
-   "options": "Waybill Item"
-  },
-  {
-   "fieldname": "picking_details_section",
-   "fieldtype": "Section Break",
-   "label": "Picking Slip Details"
-  },
-  {
-   "fieldname": "packing_slip",
-   "fieldtype": "Table",
-   "label": "Packing Slip",
-   "options": "Packing Slip Child"
-  },
-  {
-   "fieldname": "section_break_xvek",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "grand_total",
-   "fieldtype": "Currency",
-   "label": "Grand Total"
-  },
-  {
-   "fieldname": "section_break_ylqz",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "label": "Naming Series",
-   "options": "WB-.YYYY.-.####"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Waybill",
-   "print_hide": 1,
-   "read_only": 1
-  }
- ],
- "force_re_route_to_default_view": 0,
- "grid_page_length": 50,
- "has_web_view": 0,
- "hide_toolbar": 0,
- "idx": 0,
- "index_web_pages_for_search": 1,
- "is_calendar_and_gantt": 0,
- "is_submittable": 0,
- "is_tree": 0,
- "is_virtual": 0,
- "issingle": 0,
- "istable": 0,
- "links": [],
- "make_attachments_public": 0,
- "max_attachments": 0,
- "modified": "2026-02-16 07:56:09.046050",
- "modified_by": "info@indwaredigital.com",
- "module": "Manakshia Steel",
- "name": "Waybill",
- "naming_rule": "By \"Naming Series\" field",
- "owner": "info@indwaredigital.com",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  }
- ],
- "protect_attached_files": 0,
- "queue_in_background": 0,
- "quick_entry": 0,
- "read_only": 0,
- "row_format": "Dynamic",
- "show_name_in_global_search": 0,
- "show_preview_popup": 0,
- "show_title_field_in_link": 0,
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "track_changes": 0,
- "track_seen": 0,
- "track_views": 0,
- "translated_doctype": 0
+    "actions": [],
+    "allow_auto_repeat": 0,
+    "allow_copy": 0,
+    "allow_events_in_timeline": 0,
+    "allow_guest_to_view": 0,
+    "allow_import": 0,
+    "allow_rename": 1,
+    "autoname": "naming_series:",
+    "beta": 0,
+    "creation": "2025-09-01 09:35:06.263085",
+    "custom": 1,
+    "default_print_format": "Waybill Print",
+    "docstatus": 0,
+    "doctype": "DocType",
+    "document_type": "",
+    "editable_grid": 1,
+    "email_append_to": 0,
+    "engine": "InnoDB",
+    "fields": [
+        {
+            "fieldname": "customer_name",
+            "fieldtype": "Link",
+            "label": "Customer Name",
+            "options": "Supplier"
+        },
+        {
+            "fieldname": "customer_address",
+            "fieldtype": "Small Text",
+            "label": "Customer Address"
+        },
+        {
+            "fieldname": "buyers_order_no",
+            "fieldtype": "Data",
+            "label": "Buyer's Order No."
+        },
+        {
+            "fieldname": "sales_order_no",
+            "fieldtype": "Link",
+            "label": "Sales Order No.",
+            "options": "Sales Order"
+        },
+        {
+            "fieldname": "column_break_dpbz",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "date",
+            "fieldtype": "Date",
+            "label": "Date"
+        },
+        {
+            "fieldname": "remarks",
+            "fieldtype": "Small Text",
+            "label": "Remarks"
+        },
+        {
+            "fieldname": "from_warehouse",
+            "fieldtype": "Link",
+            "label": "From Warehouse",
+            "options": "Warehouse"
+        },
+        {
+            "fieldname": "to_warehouse",
+            "fieldtype": "Link",
+            "label": "To Warehouse",
+            "options": "Warehouse"
+        },
+        {
+            "fieldname": "vehicle_details_section",
+            "fieldtype": "Section Break",
+            "label": "Vehicle Details"
+        },
+        {
+            "fieldname": "vehicle_no",
+            "fieldtype": "Data",
+            "label": "Vehicle No."
+        },
+        {
+            "fieldname": "delivery_order_no",
+            "fieldtype": "Data",
+            "label": "Delivery Order No."
+        },
+        {
+            "fieldname": "authorized_by",
+            "fieldtype": "Data",
+            "label": "Authorized By"
+        },
+        {
+            "fieldname": "column_break_jqnm",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "start_time",
+            "fieldtype": "Datetime",
+            "label": "Start Time"
+        },
+        {
+            "fieldname": "end_time",
+            "fieldtype": "Datetime",
+            "label": "End Time"
+        },
+        {
+            "fieldname": "items_section",
+            "fieldtype": "Section Break",
+            "label": "Items"
+        },
+        {
+            "fieldname": "items",
+            "fieldtype": "Table",
+            "label": "Items",
+            "options": "Waybill Item"
+        },
+        {
+            "fieldname": "picking_details_section",
+            "fieldtype": "Section Break",
+            "label": "Picking Slip Details"
+        },
+        {
+            "fieldname": "packing_slip",
+            "fieldtype": "Table",
+            "label": "Packing Slip",
+            "options": "Packing Slip Child"
+        },
+        {
+            "fieldname": "section_break_xvek",
+            "fieldtype": "Section Break"
+        },
+        {
+            "fieldname": "grand_total",
+            "fieldtype": "Currency",
+            "label": "Grand Total"
+        },
+        {
+            "fieldname": "section_break_ylqz",
+            "fieldtype": "Section Break"
+        },
+        {
+            "fieldname": "naming_series",
+            "fieldtype": "Select",
+            "label": "Naming Series",
+            "options": "WB-.YYYY.-.####"
+        },
+        {
+            "fieldname": "amended_from",
+            "fieldtype": "Link",
+            "label": "Amended From",
+            "no_copy": 1,
+            "options": "Waybill",
+            "print_hide": 1,
+            "read_only": 1
+        }
+    ],
+    "force_re_route_to_default_view": 0,
+    "grid_page_length": 50,
+    "has_web_view": 0,
+    "hide_toolbar": 0,
+    "idx": 0,
+    "index_web_pages_for_search": 1,
+    "is_calendar_and_gantt": 0,
+    "is_submittable": 0,
+    "is_tree": 0,
+    "is_virtual": 0,
+    "issingle": 0,
+    "istable": 0,
+    "links": [],
+    "make_attachments_public": 0,
+    "max_attachments": 0,
+    "modified": "2026-02-16 07:56:09.046050",
+    "modified_by": "info@indwaredigital.com",
+    "module": "Manakshia Steel",
+    "name": "Waybill",
+    "naming_rule": "By \"Naming Series\" field",
+    "owner": "info@indwaredigital.com",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "delete": 0,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "All",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "protect_attached_files": 0,
+    "queue_in_background": 0,
+    "quick_entry": 0,
+    "read_only": 0,
+    "row_format": "Dynamic",
+    "show_name_in_global_search": 0,
+    "show_preview_popup": 0,
+    "show_title_field_in_link": 0,
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 0,
+    "track_seen": 0,
+    "track_views": 0,
+    "translated_doctype": 0
 }

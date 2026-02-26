@@ -1,19 +1,11 @@
 frappe.ui.form.on("Stock Entry", {
 
     refresh: function (frm) {
-        // Handle header title update
         update_stock_entry_header(frm);
-
-        // Toggle Material Issue field visibility
         toggle_issue_field(frm);
-
-        // Set filter for Material Issue field
         set_issue_filter(frm);
 
-        // Default warehouse logic
-        set_default_warehouses(frm, false);
-
-        // Add Create Material Receipt button (separate, not under Create menu)
+        // Add Create Material Receipt button on submitted Material Issues
         if (frm.doc.docstatus === 1 && frm.doc.purpose === "Material Issue") {
             frm.add_custom_button(
                 "Create Receipt",
@@ -24,21 +16,15 @@ frappe.ui.form.on("Stock Entry", {
                         custom_process: frm.doc.custom_process
                     });
                 }
-            ).addClass("btn-primary"); // Make it stand out as primary button
+            ).addClass("btn-primary");
         }
     },
 
     purpose: function (frm) {
-        // Mark that purpose has been changed
         frm.doc.__purpose_changed = true;
-
-        // Update header and toggle fields
         update_stock_entry_header(frm);
         toggle_issue_field(frm);
         set_issue_filter(frm);
-
-        // Trigger warehouse defaults
-        set_default_warehouses(frm, true);
     },
 
     custom_process: function (frm) {
@@ -57,7 +43,7 @@ frappe.ui.form.on("Stock Entry", {
     },
 
     validate: function (frm) {
-        // Force allow zero valuation rate for all items
+        // Allow zero valuation rate for all items
         if (frm.doc.items) {
             frm.doc.items.forEach(row => {
                 frappe.model.set_value(row.doctype, row.name, "allow_zero_valuation_rate", 1);
@@ -92,7 +78,7 @@ frappe.ui.form.on("Stock Entry", {
                     issued_qty[key] = (issued_qty[key] || 0) + row.qty;
                 });
 
-                // Get already received qty
+                // Get already received qty from submitted receipts
                 frappe.call({
                     method: "frappe.client.get_list",
                     args: {
@@ -123,7 +109,6 @@ frappe.ui.form.on("Stock Entry", {
                         });
 
                         Promise.all(promises).then(() => {
-                            // Add items with remaining qty
                             issue.items.forEach(row => {
                                 let key = row.item_code + "::" + (row.batch_no || "");
                                 let remaining = (issued_qty[key] || 0) - (received_qty[key] || 0);
@@ -137,7 +122,7 @@ frappe.ui.form.on("Stock Entry", {
                                     r.stock_uom = row.stock_uom || row.uom;
                                     r.conversion_factor = 1;
                                     r.transfer_qty = r.qty * r.conversion_factor;
-                                    r.allow_zero_valuation_rate = 1; // Explicitly allow zero valuation
+                                    r.allow_zero_valuation_rate = 1;
                                 }
                             });
 
@@ -150,15 +135,49 @@ frappe.ui.form.on("Stock Entry", {
     }
 });
 
-// Helper Functions
+// ── Block serial/batch selector dialog from auto-opening on Stock Entry ───────
+// erpnext scripts are fully loaded before doctype JS runs, so override directly.
+
+// Guard 1: Override the global show_serial_batch_selector function
+const _orig_show_selector = erpnext.show_serial_batch_selector;
+erpnext.show_serial_batch_selector = function (frm, item_row, callback, on_close, show_dialog) {
+    if (frm && frm.doctype === 'Stock Entry') {
+        return;  // Block entirely for Stock Entry
+    }
+    return _orig_show_selector.apply(this, arguments);
+};
+
+// Guard 2: Override SerialBatchPackageSelector constructor
+if (erpnext.SerialBatchPackageSelector) {
+    const _OrigSelector = erpnext.SerialBatchPackageSelector;
+    erpnext.SerialBatchPackageSelector = function (frm, item, callback) {
+        if (frm && frm.doctype === 'Stock Entry') {
+            return;  // No-op for Stock Entry
+        }
+        return new _OrigSelector(frm, item, callback);
+    };
+}
+
+// ── Stock Entry Detail: clear serial/batch fields on item selection ───────────
+frappe.ui.form.on('Stock Entry Detail', {
+    item_code: function (frm, cdt, cdn) {
+        frappe.model.set_value(cdt, cdn, 'use_serial_batch_fields', 0);
+        frappe.model.set_value(cdt, cdn, 'serial_and_batch_bundle', null);
+        frappe.model.set_value(cdt, cdn, 'serial_no', null);
+        frappe.model.set_value(cdt, cdn, 'batch_no', null);
+    },
+    form_render: function (frm, cdt, cdn) {
+        let row = locals[cdt][cdn];
+        if (row && row.use_serial_batch_fields) {
+            frappe.model.set_value(cdt, cdn, 'use_serial_batch_fields', 0);
+        }
+    }
+});
+
 
 function toggle_issue_field(frm) {
     let show = frm.doc.purpose === "Material Receipt";
     frm.toggle_display("custom_material_issue", show);
-    // -- Previous Implementation -- 
-    // frm.toggle_reqd("custom_material_issue", show);
-
-    // Removed strict mandatory requirement so Material Receipts can be standalone
     frm.toggle_reqd("custom_material_issue", false);
 }
 
@@ -175,17 +194,12 @@ function set_issue_filter(frm) {
 }
 
 function update_stock_entry_header(frm) {
-    // Remove old custom title first
     if (frm.page && frm.page.$title_area) {
         frm.page.$title_area.find(".custom-stock-entry-title").remove();
     }
 
-    // Don't show on refresh for new forms until purpose is changed
-    if (frm.doc.__islocal && !frm.doc.__purpose_changed) {
-        return;
-    }
+    if (frm.doc.__islocal && !frm.doc.__purpose_changed) return;
 
-    // Only proceed if purpose is Material Issue or Material Receipt
     if (!frm.doc.purpose ||
         (frm.doc.purpose !== "Material Issue" && frm.doc.purpose !== "Material Receipt")) {
         return;
@@ -225,14 +239,8 @@ function update_stock_entry_header(frm) {
             </div>
             <style>
                 @keyframes fadeIn {
-                    from {
-                        opacity: 0;
-                        transform: translateY(-10px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
+                    from { opacity: 0; transform: translateY(-10px); }
+                    to   { opacity: 1; transform: translateY(0); }
                 }
             </style>
         `;
@@ -240,67 +248,3 @@ function update_stock_entry_header(frm) {
         frm.page.$title_area.append(title_html);
     }
 }
-
-function set_default_warehouses(frm, overwrite) {
-    if (frm.doc.docstatus !== 0) return;
-
-    // Only for Material Issue/Receipt
-    if (frm.doc.purpose !== 'Material Issue' && frm.doc.purpose !== 'Material Receipt') return;
-
-    // Get User's Default Warehouse (or system default)
-    let user_default_warehouse = frappe.defaults.get_default("warehouse");
-
-    // Find Goods In Transit warehouse dynamically
-    if (frm.custom_transit_warehouse) {
-        apply_warehouse_default(frm, frm.custom_transit_warehouse, user_default_warehouse, overwrite);
-    } else {
-        frappe.call({
-            method: 'frappe.client.get_value',
-            args: {
-                doctype: 'Warehouse',
-                filters: { name: ['like', '%Transit%'] },
-                fieldname: 'name'
-            },
-            callback: function (r) {
-                if (r.message && r.message.name) {
-                    frm.custom_transit_warehouse = r.message.name;
-                    apply_warehouse_default(frm, frm.custom_transit_warehouse, user_default_warehouse, overwrite);
-                }
-            }
-        });
-    }
-}
-
-function apply_warehouse_default(frm, transit_warehouse, user_default_warehouse, overwrite) {
-    if (frm.doc.purpose === 'Material Issue') {
-        // Material Issue: Source = User Default, Target = GIT
-
-        // Set Target Warehouse to GIT
-        if (!frm.doc.to_warehouse || overwrite) {
-            frm.set_value('to_warehouse', transit_warehouse);
-        }
-
-        // Set Source Warehouse to User Default
-        if (user_default_warehouse) {
-            if (!frm.doc.from_warehouse || overwrite) {
-                frm.set_value('from_warehouse', user_default_warehouse);
-            }
-        }
-    } else if (frm.doc.purpose === 'Material Receipt') {
-        // Material Receipt: Source = GIT, Target = User Default
-
-        // Set Source Warehouse from GIT
-        if (!frm.doc.from_warehouse || overwrite) {
-            frm.set_value('from_warehouse', transit_warehouse);
-        }
-
-        // Set Target Warehouse to User Default
-        if (user_default_warehouse) {
-            if (!frm.doc.to_warehouse || overwrite) {
-                frm.set_value('to_warehouse', user_default_warehouse);
-            }
-        }
-    }
-}
-
-

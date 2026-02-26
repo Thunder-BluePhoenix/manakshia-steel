@@ -1,7 +1,6 @@
 import frappe
-from frappe import _
 from frappe.auth import LoginManager
-from frappe.utils import get_url
+
 
 @frappe.whitelist(allow_guest=True)
 def login(usr, pwd, warehouse=None, fiscal_year=None):
@@ -13,7 +12,7 @@ def login(usr, pwd, warehouse=None, fiscal_year=None):
         frappe.clear_messages()
         frappe.local.response["message"] = {
             "success_key": 0,
-            "message": "Authentication Failed. Please check your credentials."
+            "message": "Authentication Failed. Please check your credentials.",
         }
         return
 
@@ -32,8 +31,18 @@ def login(usr, pwd, warehouse=None, fiscal_year=None):
         "message": "Logged In",
         "sid": frappe.session.sid,
         "user": frappe.session.user,
-        "full_name": frappe.utils.get_fullname(frappe.session.user)
+        "full_name": frappe.utils.get_fullname(frappe.session.user),
     }
 
     frappe.local.response["message"] = api_response
     return api_response
+
+
+@frappe.whitelist()
+def get_fiscal_year_dates(fiscal_year):
+    """Return start and end dates for the given Fiscal Year name."""
+    fy = frappe.get_doc("Fiscal Year", fiscal_year)
+    return {
+        "year_start_date": str(fy.year_start_date),
+        "year_end_date": str(fy.year_end_date),
+    }
