@@ -188,7 +188,6 @@ fixtures = [
 # Permissions
 # -----------
 # Restricts list views and reports to the user's logged-in fiscal year.
-# System Manager / Administrator are exempt and see all years.
 
 _pqc = "manakshia_steel.api.fiscal_year_filter"
 

@@ -19,10 +19,6 @@ def _get_fy_date_range():
     Return (start, end) dates for the current user's selected fiscal year.
     Returns None if no fiscal year is set or if the user is exempt.
     """
-    # System Manager and Administrator see all years
-    if "System Manager" in frappe.get_roles() or frappe.session.user == "Administrator":
-        return None
-
     fiscal_year = frappe.defaults.get_user_default("fiscal_year")
     if not fiscal_year:
         return None
