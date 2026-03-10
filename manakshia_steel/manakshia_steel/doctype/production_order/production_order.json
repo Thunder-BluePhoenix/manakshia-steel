@@ -1,0 +1,152 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-10 17:50:56.690519",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "production_type",
+  "party",
+  "customer_order_no",
+  "date",
+  "item_amount",
+  "vat_rate",
+  "vat_amount",
+  "order_amount",
+  "due_date",
+  "amount_due",
+  "column_break_difu",
+  "order_no",
+  "order_date",
+  "expected_delivery_date",
+  "remarks",
+  "active",
+  "amount_to_be_deposited",
+  "section_break_cast",
+  "table_mxby"
+ ],
+ "fields": [
+  {
+   "fieldname": "production_type",
+   "fieldtype": "Data",
+   "label": "Production Type"
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Data",
+   "label": "Party"
+  },
+  {
+   "fieldname": "customer_order_no",
+   "fieldtype": "Data",
+   "label": "Customer Order No."
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "item_amount",
+   "fieldtype": "Float",
+   "label": "Item Amount"
+  },
+  {
+   "fieldname": "vat_rate",
+   "fieldtype": "Float",
+   "label": "VAT Rate"
+  },
+  {
+   "fieldname": "vat_amount",
+   "fieldtype": "Float",
+   "label": "VAT Amount"
+  },
+  {
+   "fieldname": "order_amount",
+   "fieldtype": "Float",
+   "label": "Order Amount"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date"
+  },
+  {
+   "fieldname": "amount_due",
+   "fieldtype": "Float",
+   "label": "Amount Due"
+  },
+  {
+   "fieldname": "column_break_difu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "order_no",
+   "fieldtype": "Data",
+   "label": "Order No."
+  },
+  {
+   "fieldname": "order_date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "expected_delivery_date",
+   "fieldtype": "Date",
+   "label": "Expected Delivery Date"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "default": "0",
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "label": "Active"
+  },
+  {
+   "fieldname": "amount_to_be_deposited",
+   "fieldtype": "Float",
+   "label": "Amount To Be Deposited"
+  },
+  {
+   "fieldname": "section_break_cast",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "table_mxby",
+   "fieldtype": "Table",
+   "options": "Production Order Item",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-10 18:44:20.621269",
+ "modified_by": "Administrator",
+ "module": "Manakshia Steel",
+ "name": "Production Order",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
