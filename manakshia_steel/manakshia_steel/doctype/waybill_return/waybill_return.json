@@ -6,13 +6,16 @@
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
+ "is_submittable": 1,
  "field_order": [
+  "waybill",
   "customer_name",
   "customer_address",
   "buyers_order_no",
   "sales_order_no",
   "column_break_dpbz",
   "date",
+  "custom_process",
   "remarks",
   "from_warehouse",
   "to_warehouse",
@@ -34,6 +37,12 @@
   "amended_from"
  ],
  "fields": [
+  {
+   "fieldname": "waybill",
+   "fieldtype": "Link",
+   "label": "Waybill",
+   "options": "Waybill"
+  },
   {
    "fieldname": "customer_name",
    "fieldtype": "Link",
@@ -64,6 +73,13 @@
    "fieldname": "date",
    "fieldtype": "Date",
    "label": "Date"
+  },
+  {
+   "fieldname": "custom_process",
+   "fieldtype": "Link",
+   "label": "Process",
+   "options": "Process",
+   "reqd": 1
   },
   {
    "fieldname": "remarks",
@@ -170,7 +186,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-10 16:31:31.536045",
+ "modified": "2026-03-11 18:30:00.000000",
  "modified_by": "Administrator",
  "module": "Manakshia Steel",
  "name": "Waybill Return",

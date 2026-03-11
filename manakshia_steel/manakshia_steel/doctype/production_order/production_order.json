@@ -4,6 +4,7 @@
  "creation": "2026-03-10 17:50:56.690519",
  "doctype": "DocType",
  "engine": "InnoDB",
+ "is_submittable": 1,
  "field_order": [
   "production_type",
   "party",
@@ -19,6 +20,9 @@
   "order_no",
   "order_date",
   "expected_delivery_date",
+  "source_warehouse",
+  "target_warehouse",
+  "custom_process",
   "remarks",
   "active",
   "amount_to_be_deposited",
@@ -94,6 +98,27 @@
    "fieldname": "expected_delivery_date",
    "fieldtype": "Date",
    "label": "Expected Delivery Date"
+  },
+  {
+   "fieldname": "source_warehouse",
+   "fieldtype": "Link",
+   "label": "Source Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_warehouse",
+   "fieldtype": "Link",
+   "label": "Target Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "custom_process",
+   "fieldtype": "Link",
+   "label": "Process",
+   "options": "Process",
+   "reqd": 1
   },
   {
    "fieldname": "remarks",

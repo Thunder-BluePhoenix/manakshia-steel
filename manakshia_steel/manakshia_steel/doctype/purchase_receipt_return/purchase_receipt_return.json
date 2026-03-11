@@ -14,6 +14,10 @@
   "naming_series",
   "supplier",
   "supplier_name",
+  "original_purchase_receipt",
+  "custom_process",
+  "return_type",
+  "reason_for_return",
   "supplier_delivery_note",
   "subcontracting_receipt",
   "column_break1",
@@ -219,6 +223,37 @@
    "read_only": 1
   },
   {
+   "bold": 1,
+   "fieldname": "original_purchase_receipt",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Original Purchase Receipt",
+   "options": "Purchase Receipt",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "custom_process",
+   "fieldtype": "Link",
+   "label": "Process",
+   "options": "Process",
+   "reqd": 1
+  },
+  {
+   "default": "Material Return",
+   "fieldname": "return_type",
+   "fieldtype": "Select",
+   "label": "Return Type",
+   "options": "Material Return\nReplacement",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reason_for_return",
+   "fieldtype": "Small Text",
+   "label": "Reason for Return",
+   "print_hide": 0
+  },
+  {
    "fieldname": "supplier_delivery_note",
    "fieldtype": "Data",
    "label": "Supplier Delivery Note"
@@ -299,7 +334,7 @@
    "label": "Apply Putaway Rule"
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "is_return",
    "fieldtype": "Check",
    "label": "Is Return",
@@ -458,7 +493,9 @@
    "oldfieldname": "rejected_warehouse",
    "oldfieldtype": "Link",
    "options": "Warehouse",
-   "print_hide": 1
+   "print_hide": 1,
+   "print_width": "50px",
+   "width": "50px"
   },
   {
    "default": "0",
@@ -542,7 +579,6 @@
    "print_hide": 1,
    "print_width": "150px",
    "read_only": 1,
-   "reqd": 1,
    "width": "150px"
   },
   {
