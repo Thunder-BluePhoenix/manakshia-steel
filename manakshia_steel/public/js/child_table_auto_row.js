@@ -43,9 +43,16 @@ target_doctypes.forEach(doctype => {
     });
 });
 
+// Tables that use different key fields — exclude them from the generic
+// item_code/qty blank-row check so their rows are not wrongly deleted.
+const SKIP_TABLES_FROM_BLANK_CLEANUP = [
+    'custom_packing_slip',   // uses coil_number + weight, not item_code/qty
+];
+
 function cleanup_blank_rows_global(frm) {
     frm.meta.fields.forEach(field => {
         if (field.fieldtype === 'Table') {
+            if (SKIP_TABLES_FROM_BLANK_CLEANUP.includes(field.fieldname)) return;
             remove_blank_rows(frm, field.fieldname, ['item_code', 'qty']);
         }
     });

@@ -266,6 +266,17 @@
             })
                 .then(res => res.json())
                 .then(data => {
+                    if (data._server_messages) {
+                        try {
+                            const messages = JSON.parse(data._server_messages);
+                            const parsedMessages = messages.map(msg => JSON.parse(msg).message);
+                            messageEl.innerText = parsedMessages.join("\n");
+                            return;
+                        } catch (e) {
+                            console.error("Error parsing server messages:", e);
+                        }
+                    }
+
                     if (data.message && data.message.message === "Logged In") {
                         window.location.href = "/app";
                     } else if (data.message && data.message.message) {
