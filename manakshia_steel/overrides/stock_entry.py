@@ -46,6 +46,11 @@ class CustomStockEntry(StockEntry):
 
     # ── 4. After parent validate, wipe any serial/batch refs ERPNext set ───────
     def validate(self):
+        # Clear custom fields for explicit transfer types
+        if self.stock_entry_type in ["Stock Transfer In", "Stock Transfer Out"]:
+            self.custom_process = None
+            self.custom_material_issue = None
+
         super().validate()
         self._clear_serial_batch_fields()
 

@@ -57,11 +57,11 @@ class Adjustment(StockController):
 		if not self.adjustment_type:
 			frappe.throw(_("Adjustment Type is required"))
 
-		if self.adjustment_type == "General Adjustment":
+		if self.adjustment_type == "GENERAL ADJUSTMENT":
 			self.adjustment_type_code = "GN"
-		elif self.adjustment_type == "Physical Stock Adjustment":
+		elif self.adjustment_type == "PHYSICAL STOCK ADJUSTMENT":
 			self.adjustment_type_code = "PH"
-		elif self.adjustment_type == "Yearly Stock Adjustment":
+		elif self.adjustment_type == "YEARLY STOCK ADJUSTMENT":
 			self.adjustment_type_code = "YR"
 		else:
 			frappe.throw(_("Invalid Adjustment Type: {0}").format(self.adjustment_type))

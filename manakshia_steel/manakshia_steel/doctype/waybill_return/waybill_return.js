@@ -23,8 +23,13 @@ frappe.ui.form.on("Waybill Return", {
 					row.description = item.description;
 					row.qty = item.qty;
 					row.uom = item.uom;
+					row.stock_uom = item.stock_uom;
+					row.conversion_factor = item.conversion_factor || 1;
 					row.rate = item.rate;
 					row.amount = item.amount;
+					// Carry the inward Serial/Batch Bundle so Python can find
+					// it in _find_source_bundle() without an extra DB query.
+					row.serial_and_batch_bundle = item.serial_and_batch_bundle || null;
 				});
 
 				frm.clear_table("packing_slip");

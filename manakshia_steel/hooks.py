@@ -72,6 +72,9 @@ doc_events = {
     "Purchase Receipt": {
         "before_naming": _fix_naming_year,
         "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict",
+        "autoname": "manakshia_steel.overrides.purchase_receipt_hooks.autoname",
+        "validate": "manakshia_steel.overrides.purchase_receipt_hooks.validate",
+        "before_save": "manakshia_steel.overrides.purchase_receipt_hooks.before_save",
     },
     "Delivery Note": {
         "before_naming": _fix_naming_year,

@@ -2,7 +2,7 @@ frappe.ui.form.on("Stock Entry", {
 
     refresh: function (frm) {
         update_stock_entry_header(frm);
-        toggle_issue_field(frm);
+        toggle_custom_fields(frm);
         set_issue_filter(frm);
 
         // Add Create Material Receipt button on submitted Material Issues
@@ -23,8 +23,18 @@ frappe.ui.form.on("Stock Entry", {
     purpose: function (frm) {
         frm.doc.__purpose_changed = true;
         update_stock_entry_header(frm);
-        toggle_issue_field(frm);
+        toggle_custom_fields(frm);
         set_issue_filter(frm);
+    },
+
+    stock_entry_type: function (frm) {
+        if (frm.doc.stock_entry_type === "Stock Transfer In") {
+            frm.set_value("naming_series", "STI/.#####");
+        } else if (frm.doc.stock_entry_type === "Stock Transfer Out") {
+            frm.set_value("naming_series", "STO/.#####");
+        }
+        update_stock_entry_header(frm);
+        toggle_custom_fields(frm);
     },
 
     custom_process: function (frm) {
@@ -175,9 +185,15 @@ frappe.ui.form.on('Stock Entry Detail', {
 });
 
 
-function toggle_issue_field(frm) {
-    let show = frm.doc.purpose === "Material Receipt";
-    frm.toggle_display("custom_material_issue", show);
+function toggle_custom_fields(frm) {
+    let is_transfer = ["Stock Transfer In", "Stock Transfer Out"].includes(frm.doc.stock_entry_type);
+
+    // Hide process field if it's a transfer
+    frm.toggle_display("custom_process", !is_transfer);
+
+    // Hide issue field if it's a transfer, otherwise only show for Material Receipt
+    let show_issue = !is_transfer && frm.doc.purpose === "Material Receipt";
+    frm.toggle_display("custom_material_issue", show_issue);
     frm.toggle_reqd("custom_material_issue", false);
 }
 
@@ -200,34 +216,31 @@ function update_stock_entry_header(frm) {
 
     if (frm.doc.__islocal && !frm.doc.__purpose_changed) return;
 
-    const returnTypes = ["GRN Return", "Waybill Return", "Production Order"];
+    const transferTypes = ["Stock Transfer In", "Stock Transfer Out"];
     const isProcessEntry =
         frm.doc.purpose === "Material Issue" ||
         frm.doc.purpose === "Material Receipt";
-    const isReturnEntry =
-        frm.doc.stock_entry_type && returnTypes.includes(frm.doc.stock_entry_type);
+    const isTransferEntry =
+        frm.doc.stock_entry_type && transferTypes.includes(frm.doc.stock_entry_type);
 
-    if (!isProcessEntry && !isReturnEntry) return;
+    if (!isProcessEntry && !isTransferEntry) return;
 
     if (!frm.page || !frm.page.$title_area) return;
 
     let label = "";
     let gradient_color = "";
 
-    if (frm.doc.stock_entry_type === "GRN Return") {
-        label = "GRN Return Entry";
-        gradient_color = "linear-gradient(135deg, #b91c1c 0%, #f97316 100%)";
-    } else if (frm.doc.stock_entry_type === "Waybill Return") {
-        label = "Waybill Return Entry";
+    if (frm.doc.stock_entry_type === "Stock Transfer In") {
+        label = "Stock Transfer In";
         gradient_color = "linear-gradient(135deg, #0369a1 0%, #06b6d4 100%)";
-    } else if (frm.doc.stock_entry_type === "Production Order") {
-        label = "Production Order Entry";
-        gradient_color = "linear-gradient(135deg, #7c3aed 0%, #d946ef 100%)";
+    } else if (frm.doc.stock_entry_type === "Stock Transfer Out") {
+        label = "Stock Transfer Out";
+        gradient_color = "linear-gradient(135deg, #b91c1c 0%, #f97316 100%)";
     } else if (frm.doc.purpose === "Material Issue") {
-        label = "Material Issue Entry";
+        label = "Material Issue";
         gradient_color = "linear-gradient(135deg, #1e3a8a 0%, #6b21a8 100%)";
     } else if (frm.doc.purpose === "Material Receipt") {
-        label = "Material Receipt Entry";
+        label = "Material Receipt";
         gradient_color = "linear-gradient(135deg, #129f41ff 0%, #12be5aff 100%)";
     }
 
