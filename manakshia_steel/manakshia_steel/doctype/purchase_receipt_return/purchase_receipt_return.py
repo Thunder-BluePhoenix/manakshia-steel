@@ -19,6 +19,8 @@ if not getattr(sbb.SerialBatchBundle, "_is_manakshia_patched", False):
 			return "Waybill Item"
 		if self.sle.voucher_type == "Production Order":
 			return "Production Order Item"
+		if self.sle.voucher_type == "Adjustment":
+			return "Adjustment Item"
 		return _original_child_doctype.fget(self)
 
 	sbb.SerialBatchBundle.child_doctype = _custom_child_doctype

@@ -10,7 +10,7 @@ import erpnext.stock.serial_batch_bundle as sbb
 
 import erpnext.stock.doctype.stock_ledger_entry.stock_ledger_entry as sle_module
 
-_SKIP_SERIAL_BATCH_VOUCHERS = {"Production Order", "Waybill Return", "Waybill"}
+_SKIP_SERIAL_BATCH_VOUCHERS = {"Production Order", "Waybill Return", "Waybill", "Adjustment"}
 
 if not getattr(sle_module.StockLedgerEntry, "_is_manakshia_patched", False):
 	_original_on_submit = sle_module.StockLedgerEntry.on_submit
@@ -45,6 +45,8 @@ if not getattr(sbb.SerialBatchBundle, "_is_manakshia_patched", False):
 			return "Waybill Item"
 		if self.sle.voucher_type == "Production Order":
 			return "Production Order Item"
+		if self.sle.voucher_type == "Adjustment":
+			return "Adjustment Item"
 		return _original_child_doctype.fget(self)
 
 	sbb.SerialBatchBundle.child_doctype = _custom_child_doctype
