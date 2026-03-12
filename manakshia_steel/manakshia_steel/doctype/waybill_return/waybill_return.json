@@ -9,6 +9,7 @@
  "is_submittable": 1,
  "field_order": [
   "waybill",
+  "company",
   "customer_name",
   "customer_address",
   "buyers_order_no",
@@ -34,7 +35,13 @@
   "grand_total",
   "section_break_ylqz",
   "naming_series",
-  "amended_from"
+  "amended_from",
+  "is_return",
+  "ignore_pricing_rule",
+  "currency",
+  "conversion_rate",
+  "total_taxes_and_charges",
+  "discount_amount"
  ],
  "fields": [
   {
@@ -73,13 +80,6 @@
    "fieldname": "date",
    "fieldtype": "Date",
    "label": "Date"
-  },
-  {
-   "fieldname": "custom_process",
-   "fieldtype": "Link",
-   "label": "Process",
-   "options": "Process",
-   "reqd": 1
   },
   {
    "fieldname": "remarks",
@@ -170,8 +170,12 @@
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
-   "label": "Naming Series",
-   "options": "WB-.YYYY.-.####"
+   "label": "Series",
+   "options": "WRT/.#####",
+   "reqd": 1,
+   "no_copy": 1,
+   "set_only_once": 1,
+   "default": "WRT/.#####"
   },
   {
    "fieldname": "amended_from",
@@ -181,6 +185,53 @@
    "options": "Waybill",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "remember_last_allowed_value": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "is_return",
+   "fieldtype": "Check",
+   "label": "Is Return",
+   "default": 1
+  },
+  {
+   "fieldname": "ignore_pricing_rule",
+   "fieldtype": "Check",
+   "label": "Ignore Pricing Rule",
+   "hidden": 1,
+   "default": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "hidden": 1
+  },
+  {
+   "fieldname": "conversion_rate",
+   "fieldtype": "Float",
+   "label": "Conversion Rate",
+   "hidden": 1,
+   "default": 1.0
+  },
+  {
+   "fieldname": "total_taxes_and_charges",
+   "fieldtype": "Currency",
+   "label": "Total Taxes and Charges",
+   "hidden": 1
+  },
+  {
+   "fieldname": "discount_amount",
+   "fieldtype": "Currency",
+   "label": "Discount Amount",
+   "hidden": 1
   }
  ],
  "grid_page_length": 50,

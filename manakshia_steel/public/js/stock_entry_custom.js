@@ -200,17 +200,30 @@ function update_stock_entry_header(frm) {
 
     if (frm.doc.__islocal && !frm.doc.__purpose_changed) return;
 
-    if (!frm.doc.purpose ||
-        (frm.doc.purpose !== "Material Issue" && frm.doc.purpose !== "Material Receipt")) {
-        return;
-    }
+    const returnTypes = ["GRN Return", "Waybill Return", "Production Order"];
+    const isProcessEntry =
+        frm.doc.purpose === "Material Issue" ||
+        frm.doc.purpose === "Material Receipt";
+    const isReturnEntry =
+        frm.doc.stock_entry_type && returnTypes.includes(frm.doc.stock_entry_type);
+
+    if (!isProcessEntry && !isReturnEntry) return;
 
     if (!frm.page || !frm.page.$title_area) return;
 
     let label = "";
     let gradient_color = "";
 
-    if (frm.doc.purpose === "Material Issue") {
+    if (frm.doc.stock_entry_type === "GRN Return") {
+        label = "GRN Return Entry";
+        gradient_color = "linear-gradient(135deg, #b91c1c 0%, #f97316 100%)";
+    } else if (frm.doc.stock_entry_type === "Waybill Return") {
+        label = "Waybill Return Entry";
+        gradient_color = "linear-gradient(135deg, #0369a1 0%, #06b6d4 100%)";
+    } else if (frm.doc.stock_entry_type === "Production Order") {
+        label = "Production Order Entry";
+        gradient_color = "linear-gradient(135deg, #7c3aed 0%, #d946ef 100%)";
+    } else if (frm.doc.purpose === "Material Issue") {
         label = "Material Issue Entry";
         gradient_color = "linear-gradient(135deg, #1e3a8a 0%, #6b21a8 100%)";
     } else if (frm.doc.purpose === "Material Receipt") {

@@ -1,4 +1,5 @@
 import frappe
+from frappe.utils import flt
 
 
 @frappe.whitelist()
@@ -202,12 +203,16 @@ def get_address_display(address_name):
 
 def populate_items(waybill, items, is_stock_entry=False):
     for it in items:
-        # Stock Entry items don't have 'rate' sometimes, generic logic
+        qty = it.get("qty") or it.get("accepted_qty") or it.get("received_qty") or 0
+        conversion_factor = it.get("conversion_factor") or 1.0
         row = {
             "item_code": it.item_code,
             "description": it.description if it.get("description") else it.item_name,
-            "quantity": it.qty,
+            "qty": qty,
             "uom": it.uom,
+            "stock_uom": it.get("stock_uom") or it.uom,
+            "conversion_factor": conversion_factor,
+            "stock_qty": flt(qty) * flt(conversion_factor),
             "rate": it.get("rate", 0),
             "amount": it.get("amount", 0),
         }

@@ -3,13 +3,68 @@
 
 import frappe
 from frappe import _
-from frappe.model.document import Document
+from frappe.utils import flt
+from erpnext.controllers.stock_controller import StockController
+from erpnext.stock.stock_ledger import make_sl_entries
+import erpnext.stock.serial_batch_bundle as sbb
+
+if not getattr(sbb.SerialBatchBundle, "_is_manakshia_patched", False):
+	_original_child_doctype = sbb.SerialBatchBundle.child_doctype
+
+	@property
+	def _custom_child_doctype(self):
+		if self.sle.voucher_type == "Purchase Receipt Return":
+			return "Purchase Receipt Item"
+		if self.sle.voucher_type == "Waybill Return":
+			return "Waybill Item"
+		if self.sle.voucher_type == "Production Order":
+			return "Production Order Item"
+		return _original_child_doctype.fget(self)
+
+	sbb.SerialBatchBundle.child_doctype = _custom_child_doctype
+	sbb.SerialBatchBundle._is_manakshia_patched = True
 
 
-class PurchaseReceiptReturn(Document):
+class PurchaseReceiptReturn(StockController):
+	def set_incoming_rate(self):
+		pass
+
+	def is_internal_transfer(self):
+		return False
+
+	def set_total_in_words(self):
+		pass
+
 	def validate(self):
+		self.set_company()
+		self.set_child_stock_fields()
+		super().validate()
+		self.set_exchange_rate()
 		self.validate_warehouses()
 
+	def set_child_stock_fields(self):
+		for item in self.get("items"):
+			if not item.stock_uom:
+				item.stock_uom = item.uom or frappe.db.get_value("Item", item.item_code, "stock_uom")
+			if not item.conversion_factor:
+				item.conversion_factor = 1.0
+			if not item.stock_qty:
+				item.stock_qty = flt(item.qty) * flt(item.conversion_factor)
+
+	def set_exchange_rate(self):
+		if not getattr(self, "currency", None):
+			self.currency = frappe.get_cached_value('Company', self.company, 'default_currency')
+		if not getattr(self, "conversion_rate", None) or self.conversion_rate == 0:
+			self.conversion_rate = 1.0
+
+	def set_company(self):
+		if not self.get("company"):
+			self.company = frappe.db.get_default("company") or frappe.defaults.get_user_default("Company")
+			if not self.company:
+				companies = frappe.get_all("Company", limit=1)
+				if companies:
+					self.company = companies[0].name
+			
 	def validate_warehouses(self):
 		"""Ensure at least one item has a source warehouse set."""
 		items_without_warehouse = []
@@ -19,8 +74,8 @@ class PurchaseReceiptReturn(Document):
 			warehouse = (
 				item.warehouse
 				or getattr(item, "rejected_warehouse", None)
-				or self.set_warehouse
-				or self.rejected_warehouse
+				or getattr(self, "set_warehouse", None)
+				or getattr(self, "rejected_warehouse", None)
 			)
 			if not warehouse:
 				items_without_warehouse.append(item.item_code)
@@ -36,42 +91,23 @@ class PurchaseReceiptReturn(Document):
 			)
 
 	def on_submit(self):
-		self.make_material_issue()
+		self.set_company()
+		self.update_stock_ledger()
+		self.make_gl_entries()
 
 	def on_cancel(self):
-		self.cancel_material_issue()
+		self.set_company()
+		self.ignore_linked_doctypes = ('Stock Ledger Entry', 'GL Entry')
+		self.update_stock_ledger()
+		self.make_gl_entries_on_cancel()
 
-	def make_material_issue(self):
-		"""Create a Stock Entry of type Material Issue to move stock out (back to supplier)."""
-		se = frappe.new_doc("Stock Entry")
-		se.stock_entry_type = "Material Issue"
-		se.purpose = "Material Issue"
-		se.company = self.company
-		se.posting_date = self.posting_date
-		se.posting_time = self.posting_time
+	def update_stock_ledger(self):
+		sl_entries = self.get_sl_entries()
+		if sl_entries:
+			make_sl_entries(sl_entries)
 
-		# custom_process is mandatory on Stock Entry — pull from this doc's field,
-		# or fall back to the first active Process record in the system.
-		process = self.get("custom_process")
-		if not process:
-			process = frappe.db.get_value("Process", {"is_active": 1}, "name")
-		if not process:
-			frappe.throw(
-				_(
-					"Please set a Process on this Purchase Receipt Return before submitting, "
-					"or ensure at least one active Process exists in the system."
-				)
-			)
-		se.custom_process = process
-
-		# Build a remarks string referencing this return document and the original PR
-		remarks_parts = [f"Purchase Receipt Return: {self.name}"]
-		if self.get("original_purchase_receipt"):
-			remarks_parts.append(f"Original Purchase Receipt: {self.original_purchase_receipt}")
-		if self.get("reason_for_return"):
-			remarks_parts.append(f"Reason: {self.reason_for_return}")
-		se.remarks = " | ".join(remarks_parts)
-
+	def get_sl_entries(self):
+		sl_entries = []
 		for item in self.get("items"):
 			if not item.item_code:
 				continue
@@ -79,87 +115,119 @@ class PurchaseReceiptReturn(Document):
 			source_warehouse = (
 				item.warehouse
 				or getattr(item, "rejected_warehouse", None)
-				or self.set_warehouse
-				or self.rejected_warehouse
+				or getattr(self, "set_warehouse", None)
+				or getattr(self, "rejected_warehouse", None)
 			)
 
 			if not source_warehouse:
-				frappe.msgprint(
-					_(
-						"Skipping item {0} — no source warehouse found. "
-						"Please set the warehouse and resubmit."
-					).format(item.item_code),
-					alert=True,
-				)
 				continue
-
-			se.append(
-				"items",
-				{
+			
+			qty = -1 * abs(item.qty)
+			
+			sl_entries.append(
+				frappe._dict({
 					"item_code": item.item_code,
-					"qty": abs(item.qty),
-					"uom": item.uom,
-					"stock_uom": item.stock_uom,
-					"conversion_factor": item.conversion_factor or 1,
-					"s_warehouse": source_warehouse,
+					"warehouse": source_warehouse,
+					"qty": qty,
+					"actual_qty": qty,
+					"company": self.company,
+					"voucher_type": self.doctype,
+					"voucher_no": self.name,
+					"voucher_detail_no": item.name,
+					"posting_date": self.get("posting_date") or self.get("date") or frappe.utils.today(),
+					"posting_time": self.get("posting_time") or frappe.utils.nowtime(),
+					"is_cancelled": 1 if self.docstatus == 2 else 0,
 					"serial_and_batch_bundle": getattr(item, "serial_and_batch_bundle", None),
-					"use_serial_batch_fields": 1 if getattr(item, "serial_and_batch_bundle", None) else 0,
-					"cost_center": getattr(item, "cost_center", None)
-					or getattr(self, "cost_center", None),
-					"allow_zero_valuation_rate": 1,
-				},
+					"dependant_sle_voucher_detail_no": item.name
+				})
 			)
-
-		if se.get("items"):
-			se.set_stock_entry_type()
-
-			# Re-link Serial and Batch bundles so Stock Entry can adopt them on insert
-			for row in se.get("items"):
-				if row.serial_and_batch_bundle:
-					frappe.db.set_value(
-						"Serial and Batch Bundle",
-						row.serial_and_batch_bundle,
-						{
-							"voucher_type": "Stock Entry",
-							"voucher_no": "",
-							"voucher_detail_no": ""
-						}
-					)
-
-			se.insert()
-			se.submit()
-			self.db_set("return_stock_entry", se.name)
-			frappe.msgprint(
-				_("Stock Entry {0} created and submitted for Material Issue.").format(
-					frappe.bold(se.name)
-				),
-				alert=True,
-			)
-		else:
-			frappe.throw(
-				_(
-					"No items with valid warehouse found. "
-					"Stock Entry could not be created."
+			
+			# Re-link Serial and Batch bundles natively to this doc if not cancelled
+			if getattr(item, "serial_and_batch_bundle", None) and self.docstatus == 1:
+				frappe.db.set_value(
+					"Serial and Batch Bundle",
+					item.serial_and_batch_bundle,
+					{"voucher_type": self.doctype, "voucher_no": self.name, "voucher_detail_no": item.name}
 				)
+
+		return sl_entries
+
+	def make_gl_entries(self):
+		import erpnext
+		if not frappe.utils.cint(erpnext.is_perpetual_inventory_enabled(self.company)):
+			return
+
+		gl_entries = self.get_custom_gl_entries()
+		if gl_entries:
+			from erpnext.accounts.general_ledger import make_gl_entries
+			make_gl_entries(gl_entries)
+
+	def make_gl_entries_on_cancel(self):
+		import erpnext
+		if not frappe.utils.cint(erpnext.is_perpetual_inventory_enabled(self.company)):
+			return
+
+		from erpnext.accounts.general_ledger import make_reverse_gl_entries
+		make_reverse_gl_entries(voucher_type=self.doctype, voucher_no=self.name)
+
+	def get_custom_gl_entries(self):
+		gl_entries = []
+		
+		# For a return, we credit the warehouse and debit the expense/clearing account
+		difference_account = frappe.get_cached_value('Company', self.company, 'default_expense_account')
+		if not difference_account:
+			frappe.throw(_("Please define a Default Expense Account in the Company master to process accounting entries for Purchase Receipt Return."))
+
+		inventory_account_map = self.get_inventory_account_map()
+		
+		for item in self.get("items"):
+			if not item.item_code:
+				continue
+				
+			source_warehouse = (
+				item.warehouse
+				or getattr(item, "rejected_warehouse", None)
+				or getattr(self, "set_warehouse", None)
+				or getattr(self, "rejected_warehouse", None)
 			)
 
-	def cancel_material_issue(self):
-		"""Cancel the linked Stock Entry when this return is cancelled."""
-		if self.return_stock_entry:
-			try:
-				se = frappe.get_doc("Stock Entry", self.return_stock_entry)
-				if se.docstatus == 1:
-					se.cancel()
-					frappe.msgprint(
-						_("Linked Stock Entry {0} has been cancelled.").format(
-							frappe.bold(self.return_stock_entry)
-						),
-						alert=True,
-					)
-			except frappe.DoesNotExistError:
-				frappe.msgprint(
-					_("Linked Stock Entry {0} not found — may have already been deleted.").format(
-						self.return_stock_entry
-					),
-					alert=True,
+			if not source_warehouse:
+				continue
+				
+			warehouse_account = self.get_inventory_account_dict(
+				frappe._dict({"item_code": item.item_code, "warehouse": source_warehouse}), 
+				inventory_account_map, 
+				warehouse_field="warehouse"
+			).get("account")
+			
+			if not warehouse_account:
+				frappe.throw(_("Inventory account not found for warehouse {0}").format(source_warehouse))
+			
+			amount = flt(abs(item.qty)) * flt(item.get("rate") or frappe.db.get_value("Item", item.item_code, "valuation_rate") or 0.0)
+			
+			if amount:
+				# Debit the difference/expense account
+				gl_entries.append(
+					self.get_gl_dict({
+						"account": difference_account,
+						"against": warehouse_account,
+						"cost_center": getattr(item, "cost_center", None) or getattr(self, "cost_center", None) or frappe.get_cached_value('Company', self.company, 'cost_center'),
+						"remarks": getattr(self, "remarks", None) or _("Accounting Entry for Purchase Receipt Return"),
+						"debit": amount,
+						"debit_in_account_currency": amount
+					}, item=item)
 				)
+
+				# Credit the source warehouse account
+				gl_entries.append(
+					self.get_gl_dict({
+						"account": warehouse_account,
+						"against": difference_account,
+						"cost_center": getattr(item, "cost_center", None) or getattr(self, "cost_center", None) or frappe.get_cached_value('Company', self.company, 'cost_center'),
+						"remarks": getattr(self, "remarks", None) or _("Accounting Entry for Purchase Receipt Return"),
+						"credit": amount,
+						"credit_in_account_currency": amount
+					}, item=item)
+				)
+
+		return gl_entries

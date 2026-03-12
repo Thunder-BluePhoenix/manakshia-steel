@@ -192,10 +192,11 @@
    "no_copy": 1,
    "oldfieldname": "naming_series",
    "oldfieldtype": "Select",
-   "options": "MAT-PRE-.YYYY.-\nMAT-PR-RET-.YYYY.-",
+   "options": "GRT/.#####",
    "print_hide": 1,
    "reqd": 1,
-   "set_only_once": 1
+   "set_only_once": 1,
+   "default": "GRT/.#####"
   },
   {
    "bold": 1,
@@ -231,13 +232,6 @@
    "options": "Purchase Receipt",
    "reqd": 1,
    "search_index": 1
-  },
-  {
-   "fieldname": "custom_process",
-   "fieldtype": "Link",
-   "label": "Process",
-   "options": "Process",
-   "reqd": 1
   },
   {
    "default": "Material Return",
