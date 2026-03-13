@@ -32,7 +32,18 @@
   {
    "child": 0,
    "collapsible": 1,
-   "icon": "list",
+   "icon": "arrow-right-to-line",
+   "indent": 1,
+   "keep_closed": 1,
+   "label": "GRN",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "arrow-right-to-line",
    "indent": 0,
    "keep_closed": 0,
    "label": "GRN",
@@ -42,9 +53,32 @@
    "url": "/app/purchase-receipt/new"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "icon": "list",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "GRN List",
+   "link_to": "Purchase Receipt",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "arrow-left-from-line",
+   "indent": 1,
+   "keep_closed": 1,
+   "label": "GRN Return",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "arrow-left-from-line",
    "indent": 0,
    "keep_closed": 0,
    "label": "GRN Return",
@@ -54,9 +88,32 @@
    "url": "/app/purchase-receipt/new-return"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "icon": "list",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "GRN Return List",
+   "link_to": "Purchase Receipt Return",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "clipboard-copy",
+   "indent": 1,
+   "keep_closed": 1,
+   "label": "Waybill",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "clipboard-copy",
    "indent": 0,
    "keep_closed": 0,
    "label": "Waybill",
@@ -66,9 +123,32 @@
    "url": "/app/waybill/new"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "icon": "list",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Waybill List",
+   "link_to": "Waybill",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "clipboard-paste",
+   "indent": 1,
+   "keep_closed": 1,
+   "label": "Waybill Return",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "clipboard-paste",
    "indent": 0,
    "keep_closed": 0,
    "label": "Waybill Return",
@@ -78,9 +158,32 @@
    "url": "/app/waybill-return/new"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "icon": "list",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Waybill Return List",
+   "link_to": "Waybill Return",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "arrow-down-from-line",
+   "indent": 1,
+   "keep_closed": 1,
+   "label": "Issue",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "arrow-down-from-line",
    "indent": 0,
    "keep_closed": 0,
    "label": "Issue",
@@ -90,9 +193,32 @@
    "url": "/app/stock-entry/new-issue"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "icon": "list",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Issue List",
+   "link_type": "URL",
+   "show_arrow": 0,
+   "type": "Link",
+   "url": "/app/stock-entry/list-issue"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "arrow-down-to-line",
+   "indent": 1,
+   "keep_closed": 1,
+   "label": "Receipt",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "arrow-down-to-line",
    "indent": 0,
    "keep_closed": 0,
    "label": "Receipt",
@@ -102,9 +228,32 @@
    "url": "/app/stock-entry/new-receipt"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "icon": "list",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Receipt List",
+   "link_type": "URL",
+   "show_arrow": 0,
+   "type": "Link",
+   "url": "/app/stock-entry/list-receipt"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "package-plus",
+   "indent": 1,
+   "keep_closed": 1,
+   "label": "Stock Transfer In",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "package-plus",
    "indent": 0,
    "keep_closed": 0,
    "label": "Stock Transfer In",
@@ -114,9 +263,32 @@
    "url": "/app/stock-entry/new-transfer-in"
   },
   {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "package-plus",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Stock Transfer In List",
+   "link_type": "URL",
+   "show_arrow": 0,
+   "type": "Link",
+   "url": "/app/stock-entry/list-transfer-in"
+  },
+  {
    "child": 0,
    "collapsible": 1,
-   "icon": "list",
+   "icon": "package-minus",
+   "indent": 1,
+   "keep_closed": 1,
+   "label": "Stock Transfer Out",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "package-minus",
    "indent": 0,
    "keep_closed": 0,
    "label": "Stock Transfer Out",
@@ -126,9 +298,32 @@
    "url": "/app/stock-entry/new-transfer-out"
   },
   {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "package-minus",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Stock Transfer Out List",
+   "link_type": "URL",
+   "show_arrow": 0,
+   "type": "Link",
+   "url": "/app/stock-entry/list-transfer-out"
+  },
+  {
    "child": 0,
    "collapsible": 1,
-   "icon": "list",
+   "icon": "sliders-horizontal",
+   "indent": 1,
+   "keep_closed": 1,
+   "label": "Adjustment",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "sliders-horizontal",
    "indent": 0,
    "keep_closed": 0,
    "label": "Adjustment",
@@ -138,9 +333,32 @@
    "url": "/app/adjustment/new"
   },
   {
-   "child": 0,
+   "child": 1,
    "collapsible": 1,
    "icon": "list",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Adjustment List",
+   "link_to": "Adjustment",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "settings",
+   "indent": 1,
+   "keep_closed": 1,
+   "label": "Production Order",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "settings",
    "indent": 0,
    "keep_closed": 0,
    "label": "Production Order",
@@ -148,9 +366,21 @@
    "show_arrow": 0,
    "type": "Link",
    "url": "/app/production-order/new"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "list",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Production Order List",
+   "link_to": "Production Order",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
   }
  ],
- "modified": "2026-03-13 18:42:59.713911",
+ "modified": "2026-03-13 22:13:32.755811",
  "modified_by": "Administrator",
  "module": "Manakshia Steel",
  "name": "Inventory Control",
