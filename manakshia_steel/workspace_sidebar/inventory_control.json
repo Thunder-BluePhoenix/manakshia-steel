@@ -11,11 +11,11 @@
    "icon": "list",
    "indent": 0,
    "keep_closed": 0,
-   "label": "Production Order",
-   "link_type": "URL",
+   "label": "Home",
+   "link_to": "Inventory Control",
+   "link_type": "Workspace",
    "show_arrow": 0,
-   "type": "Link",
-   "url": "/app/production-order/new"
+   "type": "Link"
   },
   {
    "child": 0,
@@ -143,14 +143,14 @@
    "icon": "list",
    "indent": 0,
    "keep_closed": 0,
-   "label": "Home",
-   "link_to": "Inventory Control",
-   "link_type": "Workspace",
+   "label": "Production Order",
+   "link_type": "URL",
    "show_arrow": 0,
-   "type": "Link"
+   "type": "Link",
+   "url": "/app/production-order/new"
   }
  ],
- "modified": "2026-03-13 16:49:40.732532",
+ "modified": "2026-03-13 18:42:59.713911",
  "modified_by": "Administrator",
  "module": "Manakshia Steel",
  "name": "Inventory Control",
