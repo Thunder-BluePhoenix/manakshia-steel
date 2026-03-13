@@ -29,6 +29,7 @@ app_license = "mit"
 app_include_js = [
     "/assets/manakshia_steel/js/child_table_auto_row.js",
     "/assets/manakshia_steel/js/fiscal_year_defaults.js",
+    "/assets/manakshia_steel/js/workspace.js",
 ]
 
 doctype_js = {

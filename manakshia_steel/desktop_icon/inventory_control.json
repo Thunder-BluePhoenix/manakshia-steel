@@ -1,0 +1,21 @@
+{
+ "app": "manakshia_steel",
+ "bg_color": "gray",
+ "creation": "2026-03-13 14:36:46.516396",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon_type": "Link",
+ "idx": 0,
+ "label": "Inventory Control",
+ "link_to": "Inventory Control",
+ "link_type": "Workspace Sidebar",
+ "modified": "2026-03-13 14:38:17.650797",
+ "modified_by": "Administrator",
+ "name": "Inventory Control",
+ "owner": "Administrator",
+ "restrict_removal": 0,
+ "roles": [],
+ "sidebar": "Inventory Control",
+ "standard": 1
+}
