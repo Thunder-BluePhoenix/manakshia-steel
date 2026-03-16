@@ -57,6 +57,8 @@ doctype_js = {
 }
 
 _fix_naming_year = "manakshia_steel.api.fiscal_year_hooks.fix_naming_year"
+_validate_fiscal_year = "manakshia_steel.api.fiscal_year_hooks.validate_fiscal_year"
+_validate_warehouse = "manakshia_steel.api.fiscal_year_hooks.validate_warehouse"
 
 # NOTE: Only ONE doc_events dict is allowed in hooks.py.
 # A second dict silently overwrites the first (Python dict re-assignment).
@@ -64,6 +66,10 @@ _fix_naming_year = "manakshia_steel.api.fiscal_year_hooks.fix_naming_year"
 doc_events = {
     "Stock Entry": {
         "before_naming": _fix_naming_year,
+        "validate": [
+            _validate_fiscal_year,
+            _validate_warehouse
+        ],
         "before_validate": [
             "manakshia_steel.api.stock_entry_custom.suppress_serial_batch_on_stock_entry",
             "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict",
@@ -74,20 +80,40 @@ doc_events = {
         "before_naming": _fix_naming_year,
         "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict",
         "autoname": "manakshia_steel.overrides.purchase_receipt_hooks.autoname",
-        "validate": "manakshia_steel.overrides.purchase_receipt_hooks.validate",
+        "validate": [
+            "manakshia_steel.overrides.purchase_receipt_hooks.validate",
+            _validate_fiscal_year,
+            _validate_warehouse
+        ],
         "before_save": "manakshia_steel.overrides.purchase_receipt_hooks.before_save",
     },
     "Delivery Note": {
         "before_naming": _fix_naming_year,
+        "validate": [
+            _validate_fiscal_year,
+            _validate_warehouse
+        ],
     },
     "Purchase Order": {
         "before_naming": _fix_naming_year,
+        "validate": [
+            _validate_fiscal_year,
+            _validate_warehouse
+        ],
     },
     "Material Request": {
         "before_naming": _fix_naming_year,
+        "validate": [
+            _validate_fiscal_year,
+            _validate_warehouse
+        ],
     },
     "Supplier Quotation": {
         "before_naming": _fix_naming_year,
+        "validate": [
+            _validate_fiscal_year,
+            _validate_warehouse
+        ],
     },
     "Subcontracting Receipt": {
         "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict",
@@ -191,9 +217,9 @@ fixtures = [
 
 # Permissions
 # -----------
-# Restricts list views and reports to the user's logged-in fiscal year.
+# Restricts list views and reports to the user's logged-in fiscal year and unit (warehouse).
 
-_pqc = "manakshia_steel.api.fiscal_year_filter"
+_pqc = "manakshia_steel.api.unit_filter"
 
 permission_query_conditions = {
     "Stock Entry": f"{_pqc}.pqc_stock_entry",

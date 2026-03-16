@@ -94,17 +94,116 @@
         });
     }
 
-    // Hook posting_date doctypes — refresh only (after ERPNext defaults are set)
-    POSTING_DATE_DOCTYPES.forEach(function (doctype) {
-        frappe.ui.form.on(doctype, {
-            refresh: function (frm) { apply_posting_date(frm); }
+    function validate_fy_date(frm, field) {
+        get_fy_defaults(function (fy) {
+            if (!fy) return;
+            const date_val = frm.doc[field];
+            if (!date_val) return;
+
+            if (date_val < fy.year_start_date || date_val > fy.year_end_date) {
+                let field_label = frappe.meta.get_label(frm.doctype, field) || field;
+                frappe.msgprint({
+                    title: __('Fiscal Year Validation'),
+                    indicator: 'red',
+                    message: __('The <b>{0}</b> ({1}) does not belong to your currently active Fiscal Year ({2} to {3}).', 
+                        [
+                            field_label, 
+                            frappe.datetime.str_to_user(date_val),
+                            frappe.datetime.str_to_user(fy.year_start_date),
+                            frappe.datetime.str_to_user(fy.year_end_date)
+                        ]
+                    )
+                });
+                frappe.validated = false;
+            }
         });
+    }
+
+    function validate_warehouse(frm, field) {
+        const warehouse = frappe.defaults.get_user_default("warehouse");
+        if (!warehouse) return;
+
+        const wh_val = frm.doc[field];
+        if (!wh_val) return;
+
+        // Stock Entry specific logic handled server-side mostly, but simple client warning:
+        if (frm.doctype === "Stock Entry") {
+            const from_wh = frm.doc.from_warehouse;
+            const to_wh = frm.doc.to_warehouse;
+            if (from_wh && to_wh && from_wh !== warehouse && to_wh !== warehouse) {
+                frappe.msgprint({
+                    title: __('Unit Validation'),
+                    indicator: 'red',
+                    message: __('Neither Source nor Target Warehouse match your currently active Unit ({0}). At least one must match.', [warehouse])
+                });
+                frappe.validated = false;
+            } else if (from_wh && !to_wh && from_wh !== warehouse) {
+                frappe.msgprint({
+                    title: __('Unit Validation'),
+                    indicator: 'red',
+                    message: __('The <b>Source Warehouse</b> ({0}) does not match your currently active Unit ({1}).', [from_wh, warehouse])
+                });
+                frappe.validated = false;
+            } else if (to_wh && !from_wh && to_wh !== warehouse) {
+                frappe.msgprint({
+                    title: __('Unit Validation'),
+                    indicator: 'red',
+                    message: __('The <b>Target Warehouse</b> ({0}) does not match your currently active Unit ({1}).', [to_wh, warehouse])
+                });
+                frappe.validated = false;
+            }
+        } else {
+            // Other doctypes
+            if (wh_val !== warehouse) {
+                let field_label = frappe.meta.get_label(frm.doctype, field) || field;
+                frappe.msgprint({
+                    title: __('Unit Validation'),
+                    indicator: 'red',
+                    message: __('The <b>{0}</b> ({1}) does not match your currently active Unit ({2}). Please change it or switch units.', 
+                        [field_label, wh_val, warehouse]
+                    )
+                });
+                frappe.validated = false;
+            }
+        }
+    }
+
+    // Hook posting_date doctypes
+    POSTING_DATE_DOCTYPES.forEach(function (doctype) {
+        let events = {
+            refresh: function (frm) { apply_posting_date(frm); },
+            posting_date: function (frm) { validate_fy_date(frm, "posting_date"); },
+            validate: function (frm) { 
+                validate_fy_date(frm, "posting_date"); 
+                if (frm.doctype === "Stock Entry") {
+                    validate_warehouse(frm, "from_warehouse");
+                    validate_warehouse(frm, "to_warehouse");
+                } else {
+                    validate_warehouse(frm, "set_warehouse");
+                }
+            }
+        };
+
+        if (doctype === "Stock Entry") {
+            events.from_warehouse = function(frm) { validate_warehouse(frm, "from_warehouse"); };
+            events.to_warehouse = function(frm) { validate_warehouse(frm, "to_warehouse"); };
+        } else {
+            events.set_warehouse = function(frm) { validate_warehouse(frm, "set_warehouse"); };
+        }
+
+        frappe.ui.form.on(doctype, events);
     });
 
-    // Hook transaction_date doctypes — refresh only
+    // Hook transaction_date doctypes
     TRANSACTION_DATE_DOCTYPES.forEach(function (doctype) {
         frappe.ui.form.on(doctype, {
-            refresh: function (frm) { apply_transaction_date(frm); }
+            refresh: function (frm) { apply_transaction_date(frm); },
+            transaction_date: function (frm) { validate_fy_date(frm, "transaction_date"); },
+            set_warehouse: function(frm) { validate_warehouse(frm, "set_warehouse"); },
+            validate: function (frm) { 
+                validate_fy_date(frm, "transaction_date");
+                validate_warehouse(frm, "set_warehouse");
+            }
         });
     });
 
