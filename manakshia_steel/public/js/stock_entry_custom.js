@@ -1,5 +1,19 @@
 frappe.ui.form.on("Stock Entry", {
 
+    onload: function (frm) {
+        // Hide stock_entry_type if opened from custom sidebar
+        var hide_types = [
+            'Material Issue',
+            'Material Receipt',
+            'Stock Transfer In',
+            'Stock Transfer Out'
+        ];
+        if (frm.is_new() && hide_types.includes(frm.doc.stock_entry_type)) {
+            frm.set_df_property('stock_entry_type', 'hidden', 1);
+            frm.set_df_property('stock_entry_type', 'read_only', 1);
+        }
+    },
+
     refresh: function (frm) {
         update_stock_entry_header(frm);
         toggle_custom_fields(frm);
