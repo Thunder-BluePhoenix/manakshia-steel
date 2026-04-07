@@ -47,6 +47,7 @@ def create_from_purchase_receipt(doc):
 
     waybill.grand_total = doc.grand_total
 
+    populate_financials(waybill, doc)
     populate_items(waybill, doc.items)
     populate_packing_slip(waybill, doc)
 
@@ -75,6 +76,7 @@ def create_from_stock_entry(doc):
 
     waybill.grand_total = doc.get("total_outgoing_value") or doc.get("total_amount")
 
+    populate_financials(waybill, doc)
     populate_items(waybill, doc.items, is_stock_entry=True)
     populate_packing_slip(waybill, doc)
 
@@ -109,6 +111,7 @@ def create_from_delivery_note(doc):
 
     waybill.grand_total = doc.grand_total
 
+    populate_financials(waybill, doc)
     populate_items(waybill, doc.items)
     populate_packing_slip(waybill, doc)
 
@@ -222,6 +225,14 @@ def populate_items(waybill, items, is_stock_entry=False):
             "serial_and_batch_bundle": it.get("serial_and_batch_bundle") or None,
         }
         waybill.append("items", row)
+
+
+def populate_financials(waybill, doc):
+    waybill.ignore_pricing_rule = doc.get("ignore_pricing_rule", 1)
+    waybill.currency = doc.get("currency")
+    waybill.conversion_rate = flt(doc.get("conversion_rate", 1.0))
+    waybill.total_taxes_and_charges = flt(doc.get("total_taxes_and_charges", 0))
+    waybill.discount_amount = flt(doc.get("discount_amount", 0))
 
 
 def populate_packing_slip(waybill, source_doc):

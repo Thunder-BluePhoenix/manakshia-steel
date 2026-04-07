@@ -6,8 +6,8 @@
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
- "is_submittable": 1,
  "field_order": [
+  "waybill_type",
   "waybill",
   "company",
   "customer_name",
@@ -16,7 +16,6 @@
   "sales_order_no",
   "column_break_dpbz",
   "date",
-  "custom_process",
   "remarks",
   "from_warehouse",
   "to_warehouse",
@@ -27,6 +26,15 @@
   "column_break_jqnm",
   "start_time",
   "end_time",
+  "section_bridge_weights",
+  "w_bridge_slip_no",
+  "w_bridge_empty_wt",
+  "w_bridge_wt",
+  "col_break_bridge",
+  "w_bridge_loaded_wt",
+  "total_quantity",
+  "calculated_weight",
+  "physical_weight",
   "items_section",
   "items",
   "picking_details_section",
@@ -53,8 +61,10 @@
   {
    "fieldname": "customer_name",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Customer Name",
-   "options": "Supplier"
+   "options": "Supplier",
+   "reqd": 1
   },
   {
    "fieldname": "customer_address",
@@ -168,76 +178,129 @@
    "fieldtype": "Section Break"
   },
   {
+   "default": "WRT/.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Series",
+   "no_copy": 1,
    "options": "WRT/.#####",
    "reqd": 1,
-   "no_copy": 1,
-   "set_only_once": 1,
-   "default": "WRT/.#####"
+   "set_only_once": 1
   },
   {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Waybill",
+   "options": "Waybill Return",
    "print_hide": 1,
    "read_only": 1
   },
   {
    "fieldname": "company",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Company",
    "options": "Company",
-   "remember_last_allowed_value": 1,
    "reqd": 1
   },
   {
+   "default": "1",
    "fieldname": "is_return",
    "fieldtype": "Check",
-   "label": "Is Return",
-   "default": 1
+   "label": "Is Return"
   },
   {
+   "default": "1",
    "fieldname": "ignore_pricing_rule",
    "fieldtype": "Check",
-   "label": "Ignore Pricing Rule",
    "hidden": 1,
-   "default": 1
+   "label": "Ignore Pricing Rule"
   },
   {
    "fieldname": "currency",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Currency",
-   "options": "Currency",
-   "hidden": 1
+   "options": "Currency"
   },
   {
+   "default": "1",
    "fieldname": "conversion_rate",
    "fieldtype": "Float",
-   "label": "Conversion Rate",
    "hidden": 1,
-   "default": 1.0
+   "label": "Conversion Rate"
   },
   {
    "fieldname": "total_taxes_and_charges",
    "fieldtype": "Currency",
-   "label": "Total Taxes and Charges",
-   "hidden": 1
+   "hidden": 1,
+   "label": "Total Taxes and Charges"
   },
   {
    "fieldname": "discount_amount",
    "fieldtype": "Currency",
-   "label": "Discount Amount",
-   "hidden": 1
+   "hidden": 1,
+   "label": "Discount Amount"
+  },
+  {
+   "fieldname": "waybill_type",
+   "fieldtype": "Select",
+   "label": "Waybill Type",
+   "options": "General\nJob work\nExport"
+  },
+  {
+   "fieldname": "section_bridge_weights",
+   "fieldtype": "Section Break",
+   "label": "Weighbridge Details"
+  },
+  {
+   "fieldname": "w_bridge_slip_no",
+   "fieldtype": "Data",
+   "label": "W/Bridge Slip No."
+  },
+  {
+   "fieldname": "w_bridge_empty_wt",
+   "fieldtype": "Float",
+   "label": "W/Bridge Empty Wt"
+  },
+  {
+   "fieldname": "w_bridge_wt",
+   "fieldtype": "Float",
+   "label": "W/Bridge Wt",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col_break_bridge",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "w_bridge_loaded_wt",
+   "fieldtype": "Float",
+   "label": "W/Bridge Loaded Wt"
+  },
+  {
+   "fieldname": "total_quantity",
+   "fieldtype": "Float",
+   "label": "Total Quantity"
+  },
+  {
+   "fieldname": "calculated_weight",
+   "fieldtype": "Float",
+   "label": "Calculated Weight"
+  },
+  {
+   "fieldname": "physical_weight",
+   "fieldtype": "Float",
+   "label": "Physical Weight"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2026-03-11 18:30:00.000000",
+ "modified": "2026-04-07 17:20:47.883664",
  "modified_by": "Administrator",
  "module": "Manakshia Steel",
  "name": "Waybill Return",

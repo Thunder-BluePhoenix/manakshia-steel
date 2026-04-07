@@ -1,28 +1,64 @@
 {
  "actions": [],
- "allow_auto_repeat": 0,
- "allow_copy": 0,
- "allow_events_in_timeline": 0,
- "allow_guest_to_view": 0,
- "allow_import": 0,
  "allow_rename": 1,
  "autoname": "naming_series:",
- "beta": 0,
  "creation": "2025-09-01 09:35:06.263085",
- "custom": 1,
- "default_print_format": "Waybill Print",
- "docstatus": 0,
  "doctype": "DocType",
- "document_type": "",
  "editable_grid": 1,
- "email_append_to": 0,
  "engine": "InnoDB",
+ "field_order": [
+  "waybill_type",
+  "customer_name",
+  "customer_address",
+  "buyers_order_no",
+  "sales_order_no",
+  "column_break_dpbz",
+  "date",
+  "remarks",
+  "from_warehouse",
+  "to_warehouse",
+  "vehicle_details_section",
+  "vehicle_no",
+  "delivery_order_no",
+  "authorized_by",
+  "column_break_jqnm",
+  "start_time",
+  "end_time",
+  "section_bridge_weights",
+  "w_bridge_slip_no",
+  "w_bridge_empty_wt",
+  "w_bridge_wt",
+  "w_bridge_loaded_wt",
+  "col_break_bridge",
+  "physical_weight",
+  "calculated_weight",
+  "total_quantity",
+  "items_section",
+  "items",
+  "picking_details_section",
+  "packing_slip",
+  "section_break_xvek",
+  "ignore_pricing_rule",
+  "currency",
+  "conversion_rate",
+  "column_break_oiqc",
+  "total_taxes_and_charges",
+  "discount_amount",
+  "grand_total",
+  "section_break_ylqz",
+  "naming_series",
+  "is_return",
+  "column_break_gbwh",
+  "amended_from"
+ ],
  "fields": [
   {
    "fieldname": "customer_name",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Customer Name",
-   "options": "Supplier"
+   "options": "Supplier",
+   "reqd": 1
   },
   {
    "fieldname": "customer_address",
@@ -136,11 +172,11 @@
    "fieldtype": "Section Break"
   },
   {
+   "default": "SAL/.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Naming Series",
-   "options": "SAL/.#####",
-   "default": "SAL/.#####"
+   "options": "SAL/.#####"
   },
   {
    "fieldname": "amended_from",
@@ -152,29 +188,111 @@
    "read_only": 1
   },
   {
+   "default": "0",
    "fieldname": "is_return",
    "fieldtype": "Check",
-   "label": "Is Return",
-   "default": 0
+   "label": "Is Return"
+  },
+  {
+   "fieldname": "waybill_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Waybill Type",
+   "options": "General\nJob work\nExport",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_bridge_weights",
+   "fieldtype": "Section Break",
+   "label": "Weighbridge Details"
+  },
+  {
+   "fieldname": "w_bridge_slip_no",
+   "fieldtype": "Data",
+   "label": "W/Bridge Slip No."
+  },
+  {
+   "fieldname": "w_bridge_empty_wt",
+   "fieldtype": "Float",
+   "label": "W/Bridge Empty Wt"
+  },
+  {
+   "fieldname": "w_bridge_wt",
+   "fieldtype": "Float",
+   "label": "W/Bridge Wt",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col_break_bridge",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "w_bridge_loaded_wt",
+   "fieldtype": "Float",
+   "label": "W/Bridge Loaded Wt"
+  },
+  {
+   "fieldname": "total_quantity",
+   "fieldtype": "Float",
+   "label": "Total Quantity"
+  },
+  {
+   "fieldname": "calculated_weight",
+   "fieldtype": "Float",
+   "label": "Calculated Weight"
+  },
+  {
+   "fieldname": "physical_weight",
+   "fieldtype": "Float",
+   "label": "Physical Weight"
+  },
+  {
+   "default": "1",
+   "fieldname": "ignore_pricing_rule",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Ignore Pricing Rule"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "default": "1.0",
+   "fieldname": "conversion_rate",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Conversion Rate"
+  },
+  {
+   "fieldname": "total_taxes_and_charges",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Total Taxes and Charges"
+  },
+  {
+   "fieldname": "discount_amount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Discount Amount"
+  },
+  {
+   "fieldname": "column_break_oiqc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_gbwh",
+   "fieldtype": "Column Break"
   }
  ],
- "force_re_route_to_default_view": 0,
  "grid_page_length": 50,
- "has_web_view": 0,
- "hide_toolbar": 0,
- "idx": 0,
  "index_web_pages_for_search": 1,
- "is_calendar_and_gantt": 0,
- "is_submittable": 0,
- "is_tree": 0,
- "is_virtual": 0,
- "issingle": 0,
- "istable": 0,
  "links": [],
- "make_attachments_public": 0,
- "max_attachments": 0,
- "modified": "2026-02-16 07:56:09.046050",
- "modified_by": "info@indwaredigital.com",
+ "modified": "2026-04-07 20:30:02.479310",
+ "modified_by": "Administrator",
  "module": "Manakshia Steel",
  "name": "Waybill",
  "naming_rule": "By \"Naming Series\" field",
@@ -194,7 +312,6 @@
   },
   {
    "create": 1,
-   "delete": 0,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -205,19 +322,8 @@
    "write": 1
   }
  ],
- "protect_attached_files": 0,
- "queue_in_background": 0,
- "quick_entry": 0,
- "read_only": 0,
  "row_format": "Dynamic",
- "show_name_in_global_search": 0,
- "show_preview_popup": 0,
- "show_title_field_in_link": 0,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_changes": 0,
- "track_seen": 0,
- "track_views": 0,
- "translated_doctype": 0
+ "states": []
 }
