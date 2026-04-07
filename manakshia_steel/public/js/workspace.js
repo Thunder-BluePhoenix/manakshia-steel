@@ -11,7 +11,6 @@
 // ============================================================
 
 
-// ── DocTypes that should always stay in Inventory Control ────
 var LOCK_DOCTYPES = [
     'Stock Entry',
     'Purchase Receipt',
@@ -20,6 +19,9 @@ var LOCK_DOCTYPES = [
     'Waybill Return',
     'Production Order',
     'Adjustment',
+    'Item',
+    'Supplier',
+    'Customer'
 ];
 
 
@@ -73,10 +75,10 @@ var INVENTORY_LINKS = [
 //   - If current DocType is in LOCK_DOCTYPES → blocks the switch
 //   - Otherwise → allows normal workspace switching
 function patch_sidebar_prototype() {
-    var sidebar = frappe.workspace && frappe.workspace.sidebar;
-    if (!sidebar) return false; // Sidebar not ready yet, try again
+    // Access the class prototype directly instead of waiting for an instance to mount
+    if (!frappe.ui || !frappe.ui.Sidebar) return false;
 
-    var proto = Object.getPrototypeOf(sidebar);
+    var proto = frappe.ui.Sidebar.prototype;
     if (proto.__inventory_patched) return true; // Already patched
 
     // Store original method to call for non-locked DocTypes
@@ -87,8 +89,13 @@ function patch_sidebar_prototype() {
         // route[0] = view type ('Form' / 'List')
         // route[1] = DocType name
         if (route && route[1] && LOCK_DOCTYPES.includes(route[1])) {
-            // Block workspace switch — stay on Inventory Control
-            console.log('Inventory Control: blocked workspace switch for', route[1]);
+            // Block workspace switch — stay on or force Inventory Control
+            if (this.sidebar_title !== 'Inventory Control') {
+                console.log('Inventory Control: forcing workspace switch for', route[1]);
+                this.setup('Inventory Control');
+            } else {
+                console.log('Inventory Control: blocked workspace switch for', route[1]);
+            }
             return;
         }
         // Allow normal workspace switching for all other DocTypes
@@ -97,15 +104,27 @@ function patch_sidebar_prototype() {
 
     proto.__inventory_patched = true;
     console.log('Inventory Control: sidebar prototype patched successfully');
+
+    // If we patched late and Frappe already loaded the wrong sidebar on a hard refresh, correct it immediately
+    setTimeout(function() {
+        var route = frappe.get_route();
+        if (route && route[1] && LOCK_DOCTYPES.includes(route[1])) {
+            if (frappe.app && frappe.app.sidebar && frappe.app.sidebar.sidebar_title !== 'Inventory Control') {
+                frappe.app.sidebar.setup('Inventory Control');
+            }
+        }
+    }, 200);
+
     return true;
 }
 
-// Poll every 500ms until sidebar is available and patch is applied
+// Poll every 50ms until frappe.ui.Sidebar class is available and patch is applied
 var patch_interval = setInterval(function () {
     if (patch_sidebar_prototype()) {
         clearInterval(patch_interval); // Stop polling once patched
     }
-}, 500);
+}, 50);
+
 
 
 // ── Open form or filtered list ────────────────────────────────
@@ -135,10 +154,14 @@ document.addEventListener('click', function (e) {
     var link = e.target.closest('a');
     if (!link || !link.href) return;
 
+    // Use raw attribute to avoid matching resolved URLs (like href="#")
+    // on pages where the URL inherently contains the match string.
+    var raw_href = link.getAttribute('href') || '';
+
     // Check if clicked link matches any of our inventory links
     for (var i = 0; i < INVENTORY_LINKS.length; i++) {
         var cfg = INVENTORY_LINKS[i];
-        if (link.href.includes(cfg.match)) {
+        if (raw_href.includes(cfg.match)) {
             e.preventDefault();  // Stop browser from opening new tab
             e.stopPropagation(); // Stop Frappe from handling the click
             block_and_open(cfg); // Handle navigation ourselves
