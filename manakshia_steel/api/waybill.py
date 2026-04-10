@@ -28,10 +28,10 @@ def create_from_source(doctype, docname):
 # =====================================================================
 def create_from_purchase_receipt(doc):
     waybill = frappe.new_doc("Waybill")
-    waybill.customer_name = doc.supplier
+    waybill.supplier_name = doc.supplier
 
     if doc.get("supplier_address"):
-        waybill.customer_address = get_address_display(doc.supplier_address)
+        waybill.supplier_address = get_address_display(doc.supplier_address)
 
     waybill.buyers_order_no = doc.supplier_delivery_note
     waybill.date = doc.posting_date
@@ -88,10 +88,10 @@ def create_from_stock_entry(doc):
 
 def create_from_delivery_note(doc):
     waybill = frappe.new_doc("Waybill")
-    waybill.customer_name = doc.customer
+    waybill.supplier_name = doc.customer
 
-    if doc.get("customer_address"):
-        waybill.customer_address = get_address_display(doc.customer_address)
+    if doc.get("supplier_address"):
+        waybill.supplier_address = get_address_display(doc.supplier_address)
 
     waybill.buyers_order_no = doc.po_no
 

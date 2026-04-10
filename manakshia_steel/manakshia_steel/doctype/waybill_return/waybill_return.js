@@ -2,8 +2,10 @@ frappe.ui.form.on("Waybill Return", {
 	waybill(frm) {
 		if (frm.doc.waybill) {
 			frappe.db.get_doc("Waybill", frm.doc.waybill).then((waybill) => {
-				frm.set_value("customer_name", waybill.customer_name);
-				frm.set_value("customer_address", waybill.customer_address);
+				frm.set_value("company", frappe.defaults.get_user_default("Company") || frappe.defaults.get_default("company") || "");
+				frm.set_value("date", frappe.datetime.nowdate());
+				frm.set_value("supplier_name", waybill.supplier_name);
+				frm.set_value("supplier_address", waybill.supplier_address);
 				frm.set_value("buyers_order_no", waybill.buyers_order_no);
 				frm.set_value("sales_order_no", waybill.sales_order_no);
 				frm.set_value("from_warehouse", waybill.from_warehouse);
@@ -15,7 +17,7 @@ frappe.ui.form.on("Waybill Return", {
 				frm.set_value("end_time", waybill.end_time);
 				frm.set_value("remarks", waybill.remarks);
 				frm.set_value("grand_total", waybill.grand_total);
-				
+
 				// Map Custom Waybill Type + Weighbridge fields
 				frm.set_value("waybill_type", waybill.waybill_type);
 				frm.set_value("w_bridge_slip_no", waybill.w_bridge_slip_no);
@@ -43,6 +45,7 @@ frappe.ui.form.on("Waybill Return", {
 					row.pkgn_qnty = item.pkgn_qnty;
 					row.physical_wt = item.physical_wt;
 					row.stock_uom = item.stock_uom;
+					row.stock_qty = item.stock_qty;
 					row.conversion_factor = item.conversion_factor || 1;
 					row.rate = item.rate;
 					row.amount = item.amount;
