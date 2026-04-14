@@ -56,16 +56,21 @@ doctype_js = {
     "Subcontracting Receipt": "public/js/warehouse_conflict_fix.js",
 }
 
-_fix_naming_year = "manakshia_steel.api.fiscal_year_hooks.fix_naming_year"
 _validate_fiscal_year = "manakshia_steel.api.fiscal_year_hooks.validate_fiscal_year"
 _validate_warehouse = "manakshia_steel.api.fiscal_year_hooks.validate_warehouse"
+
+# ── Naming hooks (all in doc_naming.py) ──────────────────────────────────────
+_dn = "manakshia_steel.api.doc_naming"
 
 # NOTE: Only ONE doc_events dict is allowed in hooks.py.
 # A second dict silently overwrites the first (Python dict re-assignment).
 # All events are merged here.
 doc_events = {
+    # ── Stock Entry ────────────────────────────────────────────────────────────
     "Stock Entry": {
-        "before_naming": _fix_naming_year,
+        # autoname_stock_entry handles year + Issue/Receipt/STI/STO series.
+        # fix_naming_year no longer needed here.
+        "autoname": f"{_dn}.autoname_stock_entry",
         "validate": [
             _validate_fiscal_year,
             _validate_warehouse
@@ -76,10 +81,10 @@ doc_events = {
         ],
         "before_submit": "manakshia_steel.api.stock_entry_custom.validate_material_receipt",
     },
+    # ── Purchase Receipt (GRN) ─────────────────────────────────────────────────
     "Purchase Receipt": {
-        "before_naming": _fix_naming_year,
+        "autoname": f"{_dn}.autoname_purchase_receipt",
         "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict",
-        "autoname": "manakshia_steel.overrides.purchase_receipt_hooks.autoname",
         "validate": [
             "manakshia_steel.overrides.purchase_receipt_hooks.validate",
             _validate_fiscal_year,
@@ -87,34 +92,57 @@ doc_events = {
         ],
         "before_save": "manakshia_steel.overrides.purchase_receipt_hooks.before_save",
     },
+    # ── Delivery Note ──────────────────────────────────────────────────────────
+    # No custom series — keep fix_naming_year so MAT-DN-.YYYY.- uses document date.
     "Delivery Note": {
-        "before_naming": _fix_naming_year,
+        "before_naming": "manakshia_steel.api.fiscal_year_hooks.fix_naming_year",
         "validate": [
             _validate_fiscal_year,
             _validate_warehouse
         ],
     },
+    # ── ERPNext buying DocTypes ────────────────────────────────────────────────
     "Purchase Order": {
-        "before_naming": _fix_naming_year,
+        "autoname": f"{_dn}.autoname_purchase_order",
         "validate": [
             _validate_fiscal_year,
             _validate_warehouse
         ],
     },
     "Material Request": {
-        "before_naming": _fix_naming_year,
+        "autoname": f"{_dn}.autoname_material_request",
         "validate": [
             _validate_fiscal_year,
             _validate_warehouse
         ],
     },
     "Supplier Quotation": {
-        "before_naming": _fix_naming_year,
+        "autoname": f"{_dn}.autoname_supplier_quotation",
         "validate": [
             _validate_fiscal_year,
             _validate_warehouse
         ],
     },
+    "Request for Quotation": {
+        "autoname": f"{_dn}.autoname_rfq",
+    },
+    # ── Custom DocTypes ────────────────────────────────────────────────────────
+    "Adjustment": {
+        "autoname": f"{_dn}.autoname_adjustment",
+    },
+    "Purchase Receipt Return": {
+        "autoname": f"{_dn}.autoname_grn_return",
+    },
+    "Waybill": {
+        "autoname": f"{_dn}.autoname_waybill",
+    },
+    "Waybill Return": {
+        "autoname": f"{_dn}.autoname_waybill_return",
+    },
+    "Production Order": {
+        "autoname": f"{_dn}.autoname_production_order",
+    },
+    # ── Subcontracting ─────────────────────────────────────────────────────────
     "Subcontracting Receipt": {
         "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict",
     },
@@ -163,7 +191,29 @@ fixtures = [
     {
         "dt": "Property Setter",
         "filters": [
-            ["name", "in", ["Purchase Receipt-custom_packing_slip-allow_bulk_edit"]]
+            ["name", "in", [
+                # Purchase Receipt bulk edit
+                "Purchase Receipt-custom_packing_slip-allow_bulk_edit",
+
+                # ── title_field cleared → document number (name) shown as first column ──
+                "Stock Entry-main-title_field",
+                "Purchase Receipt-main-title_field",
+                "Purchase Receipt Return-main-title_field",
+                "Material Request-main-title_field",
+                "Supplier Quotation-main-title_field",
+                "Purchase Order-main-title_field",
+
+                # ── naming_series template column hidden from list view ──
+                "Adjustment-naming_series-in_list_view",
+                "Waybill-naming_series-in_list_view",
+                "Waybill Return-naming_series-in_list_view",
+                "Production Order-naming_series-in_list_view",
+                "Purchase Receipt Return-naming_series-in_list_view",
+
+                # ── Stock Entry type/purpose columns removed (prefix tells the type) ──
+                "Stock Entry-stock_entry_type-in_list_view",
+                "Stock Entry-purpose-in_list_view",
+            ]]
         ],
     },
     {"dt": "Custom HTML Block"},

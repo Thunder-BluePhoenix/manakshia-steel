@@ -12,8 +12,9 @@ def _get_warehouse_condition(doctype, alias=None):
 
     tbl = alias or f"`tab{doctype}`"
     
-    if doctype in ["Purchase Receipt", "Delivery Note", "Purchase Order", "Material Request", "Supplier Quotation", "Purchase Invoice"]:
+    if doctype in ["Purchase Receipt", "Delivery Note", "Purchase Order", "Material Request", "Purchase Invoice"]:
         # These doctypes have `set_warehouse` field in the parent level
+        # NOTE: Supplier Quotation does NOT have set_warehouse at parent level — excluded intentionally
         return f"{tbl}.`set_warehouse` = '{warehouse}'"
     
     elif doctype == "Stock Entry":
