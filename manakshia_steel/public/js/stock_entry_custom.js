@@ -18,20 +18,6 @@ frappe.ui.form.on("Stock Entry", {
         update_stock_entry_header(frm);
         toggle_custom_fields(frm);
         set_issue_filter(frm);
-
-        // Add Create Material Receipt button on submitted Material Issues
-        if (frm.doc.docstatus === 1 && frm.doc.purpose === "Material Issue") {
-            frm.add_custom_button(
-                "Create Receipt",
-                function () {
-                    frappe.new_doc("Stock Entry", {
-                        stock_entry_type: "Material Receipt",
-                        custom_material_issue: frm.doc.name,
-                        custom_process: frm.doc.custom_process
-                    });
-                }
-            ).addClass("btn-primary");
-        }
     },
 
     purpose: function (frm) {
@@ -205,9 +191,8 @@ function toggle_custom_fields(frm) {
     // Hide process field if it's a transfer
     frm.toggle_display("custom_process", !is_transfer);
 
-    // Hide issue field if it's a transfer, otherwise only show for Material Receipt
-    let show_issue = !is_transfer && frm.doc.purpose === "Material Receipt";
-    frm.toggle_display("custom_material_issue", show_issue);
+    // Hide issue field in all cases as requested
+    frm.toggle_display("custom_material_issue", false);
     frm.toggle_reqd("custom_material_issue", false);
 }
 

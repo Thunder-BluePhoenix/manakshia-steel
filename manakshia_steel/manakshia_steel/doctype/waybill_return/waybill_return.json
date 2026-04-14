@@ -14,6 +14,8 @@
         "supplier_address",
         "buyers_order_no",
         "sales_order_no",
+        "custom_production_order_no",
+        "custom_production_order_date",
         "column_break_dpbz",
         "date",
         "remarks",
@@ -81,6 +83,18 @@
             "fieldtype": "Link",
             "label": "Sales Order No.",
             "options": "Sales Order"
+        },
+        {
+            "fieldname": "custom_production_order_no",
+            "fieldtype": "Link",
+            "label": "Production Order No.",
+            "options": "Production Order"
+        },
+        {
+            "fieldname": "custom_production_order_date",
+            "fieldtype": "Date",
+            "label": "Production Order Date",
+            "fetch_from": "custom_production_order_no.order_date"
         },
         {
             "fieldname": "column_break_dpbz",

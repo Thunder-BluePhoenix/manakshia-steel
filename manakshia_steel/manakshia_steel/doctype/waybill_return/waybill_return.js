@@ -8,6 +8,8 @@ frappe.ui.form.on("Waybill Return", {
 				frm.set_value("supplier_address", waybill.supplier_address);
 				frm.set_value("buyers_order_no", waybill.buyers_order_no);
 				frm.set_value("sales_order_no", waybill.sales_order_no);
+				frm.set_value("custom_production_order_no", waybill.custom_production_order_no);
+				frm.set_value("custom_production_order_date", waybill.custom_production_order_date);
 				frm.set_value("from_warehouse", waybill.from_warehouse);
 				frm.set_value("to_warehouse", waybill.to_warehouse);
 				frm.set_value("vehicle_no", waybill.vehicle_no);

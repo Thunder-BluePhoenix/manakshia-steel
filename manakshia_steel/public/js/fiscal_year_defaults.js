@@ -208,3 +208,69 @@
     });
 
 })();
+
+// ============================================================================
+// GLOBAL UNIT UI DISPLAY
+// Continually checks and injects a Unit badge into Frappe's top navbar.
+// ============================================================================
+$(document).ready(function() {
+    setInterval(function() {
+        if (!window.frappe || !frappe.defaults) return;
+        
+        const unit = frappe.defaults.get_user_default("warehouse") || frappe.defaults.get_default("warehouse");
+        if (!unit) return;
+
+        if (document.querySelector("#custom-unit-scope-badge")) {
+            let badgeText = document.querySelector("#custom-unit-scope-badge .unit-text");
+            if (badgeText && badgeText.innerText !== unit) {
+                badgeText.innerText = unit;
+            }
+            return;
+        }
+
+        const badge = document.createElement("div");
+        badge.id = "custom-unit-scope-badge";
+        badge.innerHTML = `
+            <i class="fa fa-industry" style="margin-right:8px;"></i>
+            <span class="unit-text">${unit}</span>
+        `;
+        Object.assign(badge.style, {
+            position: "fixed",
+            bottom: "16px",
+            right: "16px",
+            background: "linear-gradient(135deg, #D41F26 0%, #2E3D92 100%)",
+            color: "#fff",
+            padding: "5px 12px",
+            borderRadius: "18px",
+            fontSize: "11px",
+            fontWeight: "700",
+            fontFamily: "Inter, sans-serif",
+            boxShadow: "0 4px 12px rgba(46, 61, 146, 0.35)",
+            zIndex: "9999",
+            display: "flex",
+            alignItems: "center",
+            letterSpacing: "0.4px",
+            cursor: "default",
+            userSelect: "none",
+            textTransform: "uppercase",
+            border: "1px solid rgba(255,255,255,0.15)",
+            animation: "fadeInUp 0.5s ease-out"
+        });
+
+        // Add subtle animation
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            #custom-unit-scope-badge:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(46, 61, 146, 0.6);
+                transition: all 0.3s ease;
+            }
+        `;
+        document.head.appendChild(style);
+        document.body.appendChild(badge);
+    }, 1000);
+});
