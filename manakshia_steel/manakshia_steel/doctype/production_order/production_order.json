@@ -10,24 +10,24 @@
   "company",
   "production_type",
   "party",
+  "date",
+  "due_date",
+  "column_break_middle",
   "customer_order_no",
   "customer_order_date",
-  "net_total",
-  "total_taxes_and_charges",
-  "due_date",
-  "total_qty",
-  "column_break_middle",
-  "vat_rate",
-  "grand_total",
-  "amount_due",
-  "column_break_right",
   "order_no",
   "order_date",
   "expected_delivery_date",
+  "column_break_right",
+  "net_total",
+  "total_qty",
+  "grand_total",
+  "total_taxes_and_charges",
+  "vat_rate",
+  "amount_due",
+  "amount_to_be_deposited",
   "remarks",
   "active",
-  "amount_to_be_deposited",
-  "date",
   "is_return",
   "section_break_warehouses",
   "source_warehouse",
@@ -68,7 +68,7 @@
   {
    "fieldname": "customer_order_date",
    "fieldtype": "Date",
-   "label": "Date"
+   "label": "Customer Order Date"
   },
   {
    "default": "0",
@@ -119,7 +119,7 @@
   {
    "fieldname": "order_date",
    "fieldtype": "Date",
-   "label": "Date"
+   "label": "Order Date"
   },
   {
    "fieldname": "expected_delivery_date",
@@ -245,10 +245,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-03-13 03:58:01.788419",
+ "modified": "2026-04-22 19:41:03.406300",
  "modified_by": "Administrator",
  "module": "Manakshia Steel",
  "name": "Production Order",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
