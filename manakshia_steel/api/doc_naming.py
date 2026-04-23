@@ -20,36 +20,63 @@ from frappe.model.naming import make_autoname
 from frappe.utils import getdate, nowdate
 
 
+# ── Warehouse → Unit Code mapping ─────────────────────────────────────────────
+
+WAREHOUSE_CODE = {
+    # Main Location Units
+    "MINL LTD [ ALLOY ] - ML":      "MA",
+    "MINL LTD [ ISOLO ] - ML":      "MI",
+    "MINL LTD [ ISOLO ] ENG - ML":  "MIE",
+    "MINL LTD [ ONITSHA ] - ML":    "MO",
+    "MINL LTD [ ABA ] - ML":        "MAB",
+    "MINL LTD [ ENGINEERING ] - ML": "ME",
+    "MINL LTD [ EXPORT ] - ML":     "MEX",
+    "MINL LTD [ NORMAL ] - ML":     "MN",
+
+    # Other Warehouses
+    "Work In Progress - ML":        "WIP",
+    "Goods In Transit - ML":        "GIT",
+    "Finished Goods - ML":          "FG",
+    "Stores - ML":                  "ST",
+    "Floor - ML":                   "FL",
+}
+
+
 # ── Internal helpers ──────────────────────────────────────────────────────────
 
 def _year(doc, date_field):
-    """
-    Return the year token for the naming series.
-
-    Priority:
-    1. User's active fiscal year (frappe user default) — e.g. "2025-2026"
-       This ensures counters reset at fiscal year boundaries regardless of
-       the document's calendar date.
-    2. Calendar year from the document's date field — fallback for background
-       jobs, System Manager sessions, or users without a fiscal year set.
-    """
-    # 1. Try fiscal year from user defaults (set during unit/FY login)
-    try:
-        fy = frappe.defaults.get_user_default("fiscal_year")
-        if fy:
-            return fy                  # e.g. "2025-2026"
-    except Exception:
-        pass
-
-    # 2. Fall back to calendar year from the document's date field
-    from frappe.utils import getdate, nowdate
+    """Return 4-digit year from the document's date field."""
     val = doc.get(date_field)
     if not val:
         val = nowdate()
     try:
-        return str(getdate(val).year)  # e.g. "2026"
+        return str(getdate(val).year)
     except Exception:
         return str(getdate(nowdate()).year)
+
+
+def _unit_code(doc):
+    """
+    Return the 2-letter unit code for the user's active warehouse.
+    Falls back to 'OT' (Ota) if not found.
+    """
+    wh = frappe.defaults.get_user_default("warehouse")
+    if not wh:
+        # Fallback to general default if user default not set
+        wh = frappe.defaults.get_default("warehouse")
+    
+    if not wh:
+        return "OT"
+
+    # Match exact or contains (e.g. if 'OTA' appears in name)
+    code = WAREHOUSE_CODE.get(wh)
+    if code:
+        return code
+    
+    if "OTA" in wh.upper():
+        return "OT"
+        
+    return "OT"  # Default fallback
 
 
 def _inject_meta(doctype, series):
@@ -69,21 +96,41 @@ def _inject_meta(doctype, series):
         pass
 
 
-def _assign(doc, series):
+def _assign(doc, unit, type_code, modifier, year):
     """
-    Inject series into meta, generate a new name, assign both
-    doc.naming_series and doc.name.  Setting doc.name prevents
-    Frappe's built-in autoname from overwriting our value.
+    Generate name in format: UNIT-TYPE-MODIFIER_COUNTER-YEAR
+    e.g. OT-AJ-G0001-2026 or OT-SI-00001-2026
+    
+    To ensure counters reset per year while keeping the year at the end:
+    1. We use a key that includes the year for tabSeries (e.g. MAB-AJ-G-2026).
+    2. We extract the generated counter.
+    3. We assemble the final name with the year at the end.
     """
-    _inject_meta(doc.doctype, series)
-    doc.naming_series = series
-    doc.name = make_autoname(series, doc=doc)
+    prefix = f"{unit}-{type_code}-{modifier}" if modifier else f"{unit}-{type_code}"
+    key = f"{prefix}-{year}"
+    padding = 4 if modifier else 5
+    hashes = "#" * padding
+    
+    # Get the name with counter from Frappe (increments tabSeries)
+    name_with_counter = make_autoname(f"{key}.{hashes}", doc=doc)
+    
+    # Extract only the digits from the end
+    counter_digits = name_with_counter[-padding:]
+    
+    # Re-assemble in the requested format
+    if modifier:
+        doc.name = f"{unit}-{type_code}-{modifier}{counter_digits}-{year}"
+    else:
+        doc.name = f"{unit}-{type_code}-{counter_digits}-{year}"
+    
+    # Ensure naming_series matches the key used so Frappe doesn't complain
+    doc.naming_series = f"{key}.{hashes}"
 
 
 # ── Process → letter mapping (matches Process DocType master names) ────────────
 
 PROCESS_LETTER = {
-    "GENERAL":             "0",
+    "GENERAL":             "O",
     "CGL":                 "G",
     "CTL":                 "B",
     "CR CORRUGATION":      "Z",
@@ -101,21 +148,22 @@ PROCESS_LETTER = {
 
 # ── Adjustment ────────────────────────────────────────────────────────────────
 
-ADJUSTMENT_PREFIX = {
-    "GENERAL ADJUSTMENT":        "GN",
-    "PHYSICAL STOCK ADJUSTMENT": "PH",
-    "YEARLY STOCK ADJUSTMENT":   "YR",
+ADJUSTMENT_MODIFIER = {
+    "GENERAL ADJUSTMENT":        "G",
+    "PHYSICAL STOCK ADJUSTMENT": "P",
+    "YEARLY STOCK ADJUSTMENT":   "Y",
 }
 
 
 def autoname_adjustment(doc, method=None):
     """
     autoname hook for Adjustment.
-    Maps adjustment_type → prefix, generates GN/2026/00001 style name.
+    OT-AJ-G0001-2026
     """
+    unit = _unit_code(doc)
     year = _year(doc, "posting_date")
-    prefix = ADJUSTMENT_PREFIX.get(doc.get("adjustment_type"), "GN")
-    _assign(doc, f"{prefix}/{year}/.#####")
+    mod = ADJUSTMENT_MODIFIER.get(doc.get("adjustment_type"), "G")
+    _assign(doc, unit, "AJ", mod, year)
 
 
 # ── Stock Entry ───────────────────────────────────────────────────────────────
@@ -124,120 +172,127 @@ def autoname_stock_entry(doc, method=None):
     """
     autoname hook for Stock Entry.
 
-    Material Issue   → Issue/{letter}/{year}/.#####   e.g. Issue/G/2026/00001
-    Material Receipt → Receipt/{letter}/{year}/.##### e.g. Receipt/G/2026/00001
-    Stock Transfer In  → STI/{year}/.#####
-    Stock Transfer Out → STO/{year}/.#####
-    Other types (Manufacture, etc.) → return, let Frappe use its default series.
+    Material Issue   → OT-IS-G0001-2026
+    Material Receipt → OT-FG-G0001-2026
+    Stock Transfer In  → OT-SI-00001-2026
+    Stock Transfer Out → OT-SO-00001-2026
     """
+    unit = _unit_code(doc)
     year = _year(doc, "posting_date")
     etype = doc.stock_entry_type
 
     if etype == "Stock Transfer In":
-        _assign(doc, f"STI/{year}/.#####")
+        _assign(doc, unit, "SI", None, year)
         return
 
     if etype == "Stock Transfer Out":
-        _assign(doc, f"STO/{year}/.#####")
+        _assign(doc, unit, "SO", None, year)
         return
 
     if etype not in ("Material Issue", "Material Receipt"):
         return  # Manufacture, Repack, etc. — Frappe handles naming
 
     process = doc.get("custom_process") or ""
-    letter = PROCESS_LETTER.get(process, "0")
-    type_pfx = "Issue" if etype == "Material Issue" else "Receipt"
-    _assign(doc, f"{type_pfx}/{letter}/{year}/.#####")
+    mod = PROCESS_LETTER.get(process, "O")
+    type_code = "IS" if etype == "Material Issue" else "FG"
+    _assign(doc, unit, type_code, mod, year)
 
 
 # ── Purchase Receipt (GRN) ────────────────────────────────────────────────────
 
-PR_PREFIX = {
-    "RAW MATERIAL":    "GRN/R",
-    "CAPITAL GOODS":   "GRN/C",
-    "POWER AND FUELS": "GRN/F",
-    "GENERAL GOODS":   "GRN/G",
-    "JOB WORK":        "GRN/J",
+PR_MODIFIER = {
+    "RAW MATERIAL":    "R",
+    "CAPITAL GOODS":   "C",
+    "POWER AND FUELS": "F",
+    "GENERAL GOODS":   "G",
+    "JOB WORK":        "J",
 }
 
 
 def autoname_purchase_receipt(doc, method=None):
     """
     autoname hook for Purchase Receipt (GRN).
-    Maps custom_purchase_receipt_type → GRN/R/2026/00001 etc.
-    Falls through for types without a mapping (let Frappe use default series).
+    OT-GN-R0001-2026
     """
+    unit = _unit_code(doc)
     year = _year(doc, "posting_date")
-    pfx = PR_PREFIX.get(doc.get("custom_purchase_receipt_type"))
-    if not pfx:
+    mod = PR_MODIFIER.get(doc.get("custom_purchase_receipt_type"))
+    if not mod:
         return  # not a custom GRN type — Frappe handles naming
-    _assign(doc, f"{pfx}/{year}/.#####")
+    _assign(doc, unit, "GN", mod, year)
 
 
 # ── Purchase Receipt Return (GRN Return) ──────────────────────────────────────
 
 def autoname_grn_return(doc, method=None):
-    """autoname hook for Purchase Receipt Return → GRT/2026/00001"""
+    """OT-GR-00001-2026"""
+    unit = _unit_code(doc)
     year = _year(doc, "posting_date")
-    _assign(doc, f"GRT/{year}/.#####")
+    _assign(doc, unit, "GR", None, year)
 
 
 # ── Waybill ───────────────────────────────────────────────────────────────────
 
-WAYBILL_PREFIX = {
-    "General":  "SAL",
-    "Job work": "SAL/J",
-    "Export":   "SAL/E",
+WAYBILL_MODIFIER = {
+    "General":  None,
+    "Job work": "J",
+    "Export":   "E",
 }
 
 
 def autoname_waybill(doc, method=None):
     """
     autoname hook for Waybill.
-    General → SAL/2026/00001
-    Job work → SAL/J/2026/00001
-    Export   → SAL/E/2026/00001
+    OT-SL-00001-2026
+    OT-SL-J0001-2026
     """
+    unit = _unit_code(doc)
     year = _year(doc, "date")
-    pfx = WAYBILL_PREFIX.get(doc.get("waybill_type"), "SAL")
-    _assign(doc, f"{pfx}/{year}/.#####")
+    mod = WAYBILL_MODIFIER.get(doc.get("waybill_type"))
+    _assign(doc, unit, "SL", mod, year)
 
 
 # ── Waybill Return ────────────────────────────────────────────────────────────
 
 def autoname_waybill_return(doc, method=None):
-    """autoname hook for Waybill Return → WRT/2026/00001"""
+    """OT-SR-00001-2026"""
+    unit = _unit_code(doc)
     year = _year(doc, "date")
-    _assign(doc, f"WRT/{year}/.#####")
+    _assign(doc, unit, "SR", None, year)
 
 
 # ── ERPNext built-in DocTypes ─────────────────────────────────────────────────
 
 def autoname_material_request(doc, method=None):
-    """autoname hook for Material Request → MR/2026/00001"""
+    """OT-MR-00001-2026"""
+    unit = _unit_code(doc)
     year = _year(doc, "transaction_date")
-    _assign(doc, f"MR/{year}/.#####")
+    _assign(doc, unit, "MR", None, year)
 
 
 def autoname_supplier_quotation(doc, method=None):
-    """autoname hook for Supplier Quotation → SQ/2026/00001"""
+    """OT-SQ-00001-2026"""
+    unit = _unit_code(doc)
     year = _year(doc, "transaction_date")
-    _assign(doc, f"SQ/{year}/.#####")
+    _assign(doc, unit, "SQ", None, year)
 
 
 def autoname_rfq(doc, method=None):
-    """autoname hook for Request for Quotation → RFQ/2026/00001"""
+    """OT-RFQ-00001-2026"""
+    unit = _unit_code(doc)
     year = _year(doc, "transaction_date")
-    _assign(doc, f"RFQ/{year}/.#####")
+    _assign(doc, unit, "RFQ", None, year)
 
 
 def autoname_purchase_order(doc, method=None):
-    """autoname hook for Purchase Order → PO/2026/00001"""
+    """OT-PO-00001-2026"""
+    unit = _unit_code(doc)
     year = _year(doc, "transaction_date")
-    _assign(doc, f"PO/{year}/.#####")
+    _assign(doc, unit, "PO", None, year)
 
 
 def autoname_production_order(doc, method=None):
-    """autoname hook for Production Order → PRO/2026/00001"""
+    """OT-PRO-00001-2026"""
+    unit = _unit_code(doc)
     year = _year(doc, "order_date")
-    _assign(doc, f"PRO/{year}/.#####")
+    _assign(doc, unit, "PRO", None, year)
