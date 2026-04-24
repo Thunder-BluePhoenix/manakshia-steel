@@ -5,7 +5,7 @@ from erpnext.controllers.stock_controller import StockController
 from erpnext.stock.stock_ledger import make_sl_entries
 import erpnext.stock.serial_batch_bundle as sbb
 import erpnext.stock.doctype.stock_ledger_entry.stock_ledger_entry as sle_module
-
+from erpnext.accounts.utils import validate_fiscal_year
 # ─────────────────────────────────────────────────────────────────────────────
 #  Monkey-patch 1 – StockLedgerEntry.on_submit
 #
@@ -95,6 +95,12 @@ class WaybillReturn(StockController):
         self.set_company()
         self.set_child_stock_fields()
         self.set_exchange_rate()
+        
+        if self.date:
+            fiscal_year = frappe.defaults.get_user_default("fiscal_year")
+            if fiscal_year:
+                validate_fiscal_year(self.date, fiscal_year, self.company, label="Date")
+
         # Deliberately skip super().validate() — ERPNext's accounts_controller
         # calls validate_return() which requires a 'return_against' field that
         # does not exist on this custom doctype.

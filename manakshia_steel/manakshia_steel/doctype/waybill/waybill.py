@@ -1,9 +1,15 @@
 import frappe
 from frappe.model.document import Document
 from frappe.utils import flt
-
+from erpnext.accounts.utils import validate_fiscal_year
 class Waybill(Document):
     def validate(self):
+        if self.date:
+            fiscal_year = frappe.defaults.get_user_default("fiscal_year")
+            if fiscal_year:
+                company = frappe.defaults.get_user_default("Company")
+                validate_fiscal_year(self.date, fiscal_year, company, label="Date")
+
         if not self.items:
             frappe.throw("At least one Item must be added in the Items table.")
 

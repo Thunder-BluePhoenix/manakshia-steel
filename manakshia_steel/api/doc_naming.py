@@ -22,24 +22,7 @@ from frappe.utils import getdate, nowdate
 
 # ── Warehouse → Unit Code mapping ─────────────────────────────────────────────
 
-WAREHOUSE_CODE = {
-    # Main Location Units
-    "MINL LTD [ ALLOY ] - ML":      "MA",
-    "MINL LTD [ ISOLO ] - ML":      "MI",
-    "MINL LTD [ ISOLO ] ENG - ML":  "MIE",
-    "MINL LTD [ ONITSHA ] - ML":    "MO",
-    "MINL LTD [ ABA ] - ML":        "MAB",
-    "MINL LTD [ ENGINEERING ] - ML": "ME",
-    "MINL LTD [ EXPORT ] - ML":     "MEX",
-    "MINL LTD [ NORMAL ] - ML":     "MN",
-
-    # Other Warehouses
-    "Work In Progress - ML":        "WIP",
-    "Goods In Transit - ML":        "GIT",
-    "Finished Goods - ML":          "FG",
-    "Stores - ML":                  "ST",
-    "Floor - ML":                   "FL",
-}
+# Abbreviation is now fetched dynamically from the `custom_abbr` field on the Warehouse DocType.
 
 
 # ── Internal helpers ──────────────────────────────────────────────────────────
@@ -57,8 +40,8 @@ def _year(doc, date_field):
 
 def _unit_code(doc):
     """
-    Return the 2-letter unit code for the user's active warehouse.
-    Falls back to 'OT' (Ota) if not found.
+    Return the unit abbreviation for the user's active warehouse from the 'custom_abbr' field.
+    Returns an empty string if no warehouse or abbreviation is found.
     """
     wh = frappe.defaults.get_user_default("warehouse")
     if not wh:
@@ -66,17 +49,17 @@ def _unit_code(doc):
         wh = frappe.defaults.get_default("warehouse")
     
     if not wh:
-        return "OT"
+        return ""
 
-    # Match exact or contains (e.g. if 'OTA' appears in name)
-    code = WAREHOUSE_CODE.get(wh)
-    if code:
-        return code
+    # Fetch the custom abbreviation directly from the Warehouse doctype
+    try:
+        code = frappe.db.get_value("Warehouse", wh, "custom_abbr")
+        if code:
+            return code
+    except Exception:
+        pass
     
-    if "OTA" in wh.upper():
-        return "OT"
-        
-    return "OT"  # Default fallback
+    return ""
 
 
 def _inject_meta(doctype, series):
@@ -106,7 +89,11 @@ def _assign(doc, unit, type_code, modifier, year):
     2. We extract the generated counter.
     3. We assemble the final name with the year at the end.
     """
-    prefix = f"{unit}-{type_code}-{modifier}" if modifier else f"{unit}-{type_code}"
+    if unit:
+        prefix = f"{unit}-{type_code}-{modifier}" if modifier else f"{unit}-{type_code}"
+    else:
+        prefix = f"{type_code}-{modifier}" if modifier else f"{type_code}"
+        
     key = f"{prefix}-{year}"
     padding = 4 if modifier else 5
     hashes = "#" * padding
@@ -119,9 +106,9 @@ def _assign(doc, unit, type_code, modifier, year):
     
     # Re-assemble in the requested format
     if modifier:
-        doc.name = f"{unit}-{type_code}-{modifier}{counter_digits}-{year}"
+        doc.name = f"{prefix}{counter_digits}-{year}"
     else:
-        doc.name = f"{unit}-{type_code}-{counter_digits}-{year}"
+        doc.name = f"{prefix}-{counter_digits}-{year}"
     
     # Ensure naming_series matches the key used so Frappe doesn't complain
     doc.naming_series = f"{key}.{hashes}"

@@ -1,12 +1,12 @@
 frappe.ui.form.on("Waybill", {
-    supplier_name: function (frm) {
-        if (frm.doc.supplier_name) {
-            frappe.db.get_value("Supplier", frm.doc.supplier_name, [
+    customer_name: function (frm) {
+        if (frm.doc.customer_name) {
+            frappe.db.get_value("Customer", frm.doc.customer_name, [
                 "custom_address_line_1", 
                 "custom_address_line_2", 
                 "custom_citytown", 
                 "custom_state__province", 
-                "country", 
+                "custom_country", 
                 "custom_postal_code",
                 "custom_phone",
                 "custom_email"
@@ -23,18 +23,18 @@ frappe.ui.form.on("Waybill", {
                     if (city_state.length > 0) address_parts.push(city_state.join(", "));
                     
                     let curr_country = [];
-                    if (d.country) curr_country.push(d.country);
+                    if (d.custom_country) curr_country.push(d.custom_country);
                     if (d.custom_postal_code) curr_country.push(d.custom_postal_code);
                     if (curr_country.length > 0) address_parts.push(curr_country.join(" - "));
 
                     if (d.custom_phone) address_parts.push("Phone: " + d.custom_phone);
                     if (d.custom_email) address_parts.push("Email: " + d.custom_email);
 
-                    frm.set_value("supplier_address", address_parts.join("\n"));
+                    frm.set_value("customer_address", address_parts.join("\n"));
                 }
             });
         } else {
-            frm.set_value("supplier_address", "");
+            frm.set_value("customer_address", "");
         }
     },
     w_bridge_loaded_wt: function (frm) {

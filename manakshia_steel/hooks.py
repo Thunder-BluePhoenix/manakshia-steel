@@ -278,8 +278,30 @@ permission_query_conditions = {
     "Purchase Order": f"{_pqc}.pqc_purchase_order",
     "Material Request": f"{_pqc}.pqc_material_request",
     "Supplier Quotation": f"{_pqc}.pqc_supplier_quotation",
+    "Request for Quotation": f"{_pqc}.pqc_request_for_quotation",
     "Purchase Invoice": f"{_pqc}.pqc_purchase_invoice",
     "Stock Ledger Entry": f"{_pqc}.pqc_stock_ledger_entry",
+    "Adjustment": f"{_pqc}.pqc_adjustment",
+    "Production Order": f"{_pqc}.pqc_production_order",
+    "Purchase Receipt Return": f"{_pqc}.pqc_purchase_receipt_return",
+    "Waybill": f"{_pqc}.pqc_waybill",
+    "Waybill Return": f"{_pqc}.pqc_waybill_return",
+}
+
+has_permission = {
+    "Stock Entry": f"{_pqc}.hp_stock_entry",
+    "Purchase Receipt": f"{_pqc}.hp_purchase_receipt",
+    "Delivery Note": f"{_pqc}.hp_delivery_note",
+    "Purchase Order": f"{_pqc}.hp_purchase_order",
+    "Material Request": f"{_pqc}.hp_material_request",
+    "Supplier Quotation": f"{_pqc}.hp_supplier_quotation",
+    "Request for Quotation": f"{_pqc}.hp_request_for_quotation",
+    "Purchase Invoice": f"{_pqc}.hp_purchase_invoice",
+    "Adjustment": f"{_pqc}.hp_adjustment",
+    "Production Order": f"{_pqc}.hp_production_order",
+    "Purchase Receipt Return": f"{_pqc}.hp_purchase_receipt_return",
+    "Waybill": f"{_pqc}.hp_waybill",
+    "Waybill Return": f"{_pqc}.hp_waybill_return",
 }
 
 # DocType Class

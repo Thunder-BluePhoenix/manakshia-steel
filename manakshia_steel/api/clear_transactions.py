@@ -66,27 +66,25 @@ STANDALONE_TABLES = [
     ("Serial No",                 "Serial Nos"),
 ]
 
-# ── 3. Series prefixes to reset (exact prefixes used in tabSeries) ────────────
-# tabSeries stores keys like "Issue/G/2026-2027/" → current counter
+# ── 3. Series prefixes to reset ─────────────────────────────────────────────────
+# Since doc_naming.py now dynamically injects the Unit abbreviation, the series
+# in tabSeries will look like "OT-AJ-G-2026" or "MAB-IS-O-2026".
+# We use LIKE patterns to match the specific type codes in the middle or start.
 SERIES_PATTERNS = [
-    # Adjustment
-    "GN/", "PH/", "YR/",
-    # Stock Entry Issue (all process letters)
-    "Issue/0/", "Issue/G/", "Issue/B/", "Issue/Z/", "Issue/F/",
-    "Issue/M/", "Issue/C/", "Issue/E/", "Issue/H/", "Issue/P/",
-    "Issue/S/", "Issue/D/", "Issue/J/",
-    # Stock Entry Receipt
-    "Receipt/0/", "Receipt/G/", "Receipt/B/", "Receipt/Z/", "Receipt/F/",
-    "Receipt/M/", "Receipt/C/", "Receipt/E/", "Receipt/H/", "Receipt/P/",
-    "Receipt/S/", "Receipt/D/", "Receipt/J/",
-    # Stock Transfer
-    "STI/", "STO/",
-    # GRN
-    "GRN/R/", "GRN/C/", "GRN/F/", "GRN/G/", "GRN/J/",
-    # GRN Return / Waybill / Waybill Return
-    "GRT/", "SAL/", "SAL/J/", "SAL/E/", "WRT/",
-    # ERPNext DocTypes
-    "MR/", "SQ/", "RFQ/", "PO/", "PRO/",
+    "%-AJ-%", "AJ-%",        # Adjustment
+    "%-IS-%", "IS-%",        # Material Issue
+    "%-FG-%", "FG-%",        # Material Receipt
+    "%-SI-%", "SI-%",        # Stock Transfer In
+    "%-SO-%", "SO-%",        # Stock Transfer Out
+    "%-GN-%", "GN-%",        # Purchase Receipt (GRN)
+    "%-GR-%", "GR-%",        # Purchase Receipt Return
+    "%-SL-%", "SL-%",        # Waybill
+    "%-SR-%", "SR-%",        # Waybill Return
+    "%-MR-%", "MR-%",        # Material Request
+    "%-SQ-%", "SQ-%",        # Supplier Quotation
+    "%-RFQ-%", "RFQ-%",      # Request for Quotation
+    "%-PO-%", "PO-%",        # Purchase Order
+    "%-PRO-%", "PRO-%",      # Production Order
 ]
 
 
@@ -128,12 +126,10 @@ def _reset_series():
     """Reset custom series counters in tabSeries to 0."""
     print("\n── Resetting series counters ────────────────────────────────────────")
     total = 0
-    for prefix in SERIES_PATTERNS:
-        # tabSeries key format: "SERIESPREFIX/" + fiscal-year + "/"
-        # We match anything that STARTS WITH this prefix
+    for pattern in SERIES_PATTERNS:
         rows = frappe.db.sql(
             "SELECT name, current FROM tabSeries WHERE name LIKE %s",
-            (prefix + "%",), as_dict=True
+            (pattern,), as_dict=True
         )
         for row in rows:
             frappe.db.sql("UPDATE tabSeries SET current = 0 WHERE name = %s", (row.name,))

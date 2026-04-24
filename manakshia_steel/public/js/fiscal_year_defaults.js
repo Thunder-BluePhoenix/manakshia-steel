@@ -20,6 +20,7 @@
         "Purchase Order",
         "Material Request",
         "Supplier Quotation",
+        "Request for Quotation"
     ];
 
     // Cache for fiscal year dates fetched from server
@@ -126,29 +127,32 @@
         const wh_val = frm.doc[field];
         if (!wh_val) return;
 
-        // Stock Entry specific logic handled server-side mostly, but simple client warning:
-        if (frm.doctype === "Stock Entry") {
+        if (frm.doctype === "Stock Entry" || frm.doctype === "Waybill" || frm.doctype === "Waybill Return") {
             const from_wh = frm.doc.from_warehouse;
             const to_wh = frm.doc.to_warehouse;
-            if (from_wh && to_wh && from_wh !== warehouse && to_wh !== warehouse) {
+            
+            if (from_wh && from_wh !== warehouse) {
                 frappe.msgprint({
                     title: __('Unit Validation'),
                     indicator: 'red',
-                    message: __('Neither Source nor Target Warehouse match your currently active Unit ({0}). At least one must match.', [warehouse])
+                    message: __('The <b>Source Warehouse</b> ({0}) must be your active Unit ({1}).', [from_wh, warehouse])
                 });
                 frappe.validated = false;
-            } else if (from_wh && !to_wh && from_wh !== warehouse) {
+            } else if (!from_wh && to_wh && to_wh !== warehouse) {
                 frappe.msgprint({
                     title: __('Unit Validation'),
                     indicator: 'red',
-                    message: __('The <b>Source Warehouse</b> ({0}) does not match your currently active Unit ({1}).', [from_wh, warehouse])
+                    message: __('For incoming stock, the <b>Target Warehouse</b> ({0}) must be your active Unit ({1}).', [to_wh, warehouse])
                 });
                 frappe.validated = false;
-            } else if (to_wh && !from_wh && to_wh !== warehouse) {
+            }
+        } else if (frm.doctype === "Production Order") {
+            const source_wh = frm.doc.source_warehouse;
+            if (source_wh && source_wh !== warehouse) {
                 frappe.msgprint({
                     title: __('Unit Validation'),
                     indicator: 'red',
-                    message: __('The <b>Target Warehouse</b> ({0}) does not match your currently active Unit ({1}).', [to_wh, warehouse])
+                    message: __('The <b>Source Warehouse</b> ({0}) must be your active Unit ({1}).', [source_wh, warehouse])
                 });
                 frappe.validated = false;
             }
@@ -178,6 +182,9 @@
                 if (frm.doctype === "Stock Entry") {
                     validate_warehouse(frm, "from_warehouse");
                     validate_warehouse(frm, "to_warehouse");
+                } else if (frm.doctype === "Production Order") {
+                    validate_warehouse(frm, "source_warehouse");
+                    validate_warehouse(frm, "target_warehouse");
                 } else {
                     validate_warehouse(frm, "set_warehouse");
                 }
@@ -207,6 +214,25 @@
         });
     });
 
+    const DATE_DOCTYPES = [
+        "Waybill",
+        "Waybill Return"
+    ];
+
+    DATE_DOCTYPES.forEach(function (doctype) {
+        let events = {
+            refresh: function (frm) { apply_posting_date(frm, "date"); },
+            date: function (frm) { validate_fy_date(frm, "date"); },
+            validate: function (frm) { 
+                validate_fy_date(frm, "date"); 
+                validate_warehouse(frm, "from_warehouse");
+                validate_warehouse(frm, "to_warehouse");
+            }
+        };
+
+        frappe.ui.form.on(doctype, events);
+    });
+
 })();
 
 // ============================================================================
@@ -218,12 +244,19 @@ $(document).ready(function() {
         if (!window.frappe || !frappe.defaults) return;
         
         const unit = frappe.defaults.get_user_default("warehouse") || frappe.defaults.get_default("warehouse");
+        const fy = frappe.defaults.get_user_default("fiscal_year") || frappe.defaults.get_default("fiscal_year");
+        
         if (!unit) return;
+
+        let displayText = unit;
+        if (fy) {
+            displayText = unit + " - " + fy;
+        }
 
         if (document.querySelector("#custom-unit-scope-badge")) {
             let badgeText = document.querySelector("#custom-unit-scope-badge .unit-text");
-            if (badgeText && badgeText.innerText !== unit) {
-                badgeText.innerText = unit;
+            if (badgeText && badgeText.innerText !== displayText) {
+                badgeText.innerText = displayText;
             }
             return;
         }
@@ -232,7 +265,7 @@ $(document).ready(function() {
         badge.id = "custom-unit-scope-badge";
         badge.innerHTML = `
             <i class="fa fa-industry" style="margin-right:8px;"></i>
-            <span class="unit-text">${unit}</span>
+            <span class="unit-text">${displayText}</span>
         `;
         Object.assign(badge.style, {
             position: "fixed",

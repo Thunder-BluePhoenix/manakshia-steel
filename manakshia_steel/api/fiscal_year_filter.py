@@ -9,8 +9,14 @@ FISCAL_YEAR_FILTER_DOCTYPES = {
     "Purchase Order": "transaction_date",
     "Material Request": "transaction_date",
     "Supplier Quotation": "transaction_date",
+    "Request for Quotation": "transaction_date",
     "Purchase Invoice": "posting_date",
     "Stock Ledger Entry": "posting_date",
+    "Adjustment": "posting_date",
+    "Production Order": "date",
+    "Purchase Receipt Return": "posting_date",
+    "Waybill": "date",
+    "Waybill Return": "date",
 }
 
 
@@ -86,3 +92,26 @@ def pqc_purchase_invoice(user=None):
 
 def pqc_stock_ledger_entry(user=None):
     return get_fiscal_year_condition("Stock Ledger Entry")
+
+
+def pqc_adjustment(user=None):
+    return get_fiscal_year_condition("Adjustment")
+
+
+def pqc_production_order(user=None):
+    return get_fiscal_year_condition("Production Order")
+
+
+def pqc_purchase_receipt_return(user=None):
+    return get_fiscal_year_condition("Purchase Receipt Return")
+
+
+def pqc_waybill(user=None):
+    return get_fiscal_year_condition("Waybill")
+
+
+def pqc_waybill_return(user=None):
+    return get_fiscal_year_condition("Waybill Return")
+
+def pqc_request_for_quotation(user=None):
+    return get_fiscal_year_condition("Request for Quotation")

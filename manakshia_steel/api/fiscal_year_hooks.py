@@ -9,6 +9,7 @@ YEAR_DOCTYPES_DATE_FIELD = {
     "Purchase Order": "transaction_date",
     "Material Request": "transaction_date",
     "Supplier Quotation": "transaction_date",
+    "Request for Quotation": "transaction_date",
 }
 
 
@@ -122,23 +123,25 @@ def validate_warehouse(doc, method=None):
                 title="Unit Validation"
             )
             
-    elif doc.doctype == "Stock Entry":
+    elif doc.doctype in ["Stock Entry", "Waybill", "Waybill Return"]:
         from_wh = doc.get("from_warehouse")
         to_wh = doc.get("to_warehouse")
         
-        # If neither matches the active warehouse
-        if from_wh and from_wh != warehouse and to_wh and to_wh != warehouse:
+        if from_wh and from_wh != warehouse:
             frappe.throw(
-                f"Neither Source nor Target Warehouse match your currently active Unit ({warehouse}). At least one must match.",
+                f"The <b>Source Warehouse</b> ({from_wh}) must be your active Unit ({warehouse}).",
                 title="Unit Validation"
             )
-        elif from_wh and not to_wh and from_wh != warehouse:
+        elif not from_wh and to_wh and to_wh != warehouse:
              frappe.throw(
-                f"The <b>Source Warehouse</b> ({from_wh}) does not match your currently active Unit ({warehouse}).",
+                f"For incoming stock, the <b>Target Warehouse</b> ({to_wh}) must be your active Unit ({warehouse}).",
                 title="Unit Validation"
             )
-        elif to_wh and not from_wh and to_wh != warehouse:
-             frappe.throw(
-                f"The <b>Target Warehouse</b> ({to_wh}) does not match your currently active Unit ({warehouse}).",
+
+    elif doc.doctype == "Production Order":
+        source_wh = doc.get("source_warehouse")
+        if source_wh and source_wh != warehouse:
+            frappe.throw(
+                f"The <b>Source Warehouse</b> ({source_wh}) must be your active Unit ({warehouse}).",
                 title="Unit Validation"
             )

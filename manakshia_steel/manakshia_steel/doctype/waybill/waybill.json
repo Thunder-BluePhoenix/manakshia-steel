@@ -8,8 +8,8 @@
  "engine": "InnoDB",
  "field_order": [
   "waybill_type",
-  "supplier_name",
-  "supplier_address",
+  "customer_name",
+  "customer_address",
   "buyers_order_no",
   "buyers_order_date",
   "sales_order_no",
@@ -31,6 +31,7 @@
   "end_time",
   "section_bridge_weights",
   "w_bridge_slip_no",
+  "wbridge_slip_date",
   "w_bridge_empty_wt",
   "w_bridge_wt",
   "w_bridge_loaded_wt",
@@ -58,17 +59,17 @@
  ],
  "fields": [
   {
-   "fieldname": "supplier_name",
+   "fieldname": "customer_name",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Supplier Name",
-   "options": "Supplier",
+   "label": "Customer Name",
+   "options": "Customer",
    "reqd": 1
   },
   {
-   "fieldname": "supplier_address",
+   "fieldname": "customer_address",
    "fieldtype": "Small Text",
-   "label": "Supplier Address"
+   "label": "Customer Address"
   },
   {
    "fieldname": "buyers_order_no",
@@ -100,7 +101,8 @@
   {
    "fieldname": "date",
    "fieldtype": "Date",
-   "label": "Date"
+   "label": "Date",
+   "reqd": 1
   },
   {
    "fieldname": "remarks",
@@ -319,12 +321,17 @@
    "fieldname": "sales_order_date",
    "fieldtype": "Date",
    "label": "Sales Order Date"
+  },
+  {
+   "fieldname": "wbridge_slip_date",
+   "fieldtype": "Date",
+   "label": "W/Bridge Slip Date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-22 19:35:17.858394",
+ "modified": "2026-04-24 13:48:33.343581",
  "modified_by": "Administrator",
  "module": "Manakshia Steel",
  "name": "Waybill",
