@@ -26,8 +26,11 @@
         {
             "fieldname": "grade_specification",
             "fieldtype": "Data",
+            "fetch_from": "coil_number.item_name",
+            "fetch_if_empty": 1,
             "in_list_view": 1,
-            "label": "Grade/Specification"
+            "label": "Grade/Specification",
+            "read_only": 1
         },
         {
             "fieldname": "thickness",
@@ -55,9 +58,13 @@
         },
         {
             "fieldname": "batch_no",
-            "fieldtype": "Data",
+            "fieldtype": "Link",
+            "options": "Batch",
+            "fetch_from": "coil_number.batch_no",
+            "fetch_if_empty": 1,
             "in_list_view": 1,
-            "label": "Batch No"
+            "label": "Batch No",
+            "read_only": 1
         },
         {
             "fieldname": "column_break_gwet",

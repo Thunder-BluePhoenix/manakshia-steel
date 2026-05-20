@@ -1,0 +1,181 @@
+{
+ "app": "manakshia_steel",
+ "charts": [],
+ "content": "[{\"id\": \"header_shortcuts\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Shortcuts</b></span>\", \"col\": 12}}, {\"id\": \"sc_gal\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Galvanized Entry\", \"col\": 4}}, {\"id\": \"sc_cc\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New CC Coil Entry\", \"col\": 4}}, {\"id\": \"sc_emb\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Embossed Entry\", \"col\": 4}}, {\"id\": \"sc_ctl\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New CTL Production\", \"col\": 4}}, {\"id\": \"sc_col\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Colour Profile\", \"col\": 4}}, {\"id\": \"sc_cor\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Corrugated Sheet\", \"col\": 4}}, {\"id\": \"spacer_1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"header_masters\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Masters &amp; Reports</b></span>\", \"col\": 12}}, {\"id\": \"card_prod\", \"type\": \"card\", \"data\": {\"card_name\": \"Production Stages\", \"col\": 6}}, {\"id\": \"card_rep\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 6}}]",
+ "creation": "2026-05-18 16:29:10",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "hide_custom": 0,
+ "icon": "steel-manufacturing",
+ "idx": 0,
+ "indicator_color": "blue",
+ "is_hidden": 0,
+ "label": "Steel Manufacturing",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Production Stages",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Galvanized Coil Production",
+   "link_count": 0,
+   "link_to": "Galvanized Coil Production",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CC Coil Production",
+   "link_count": 0,
+   "link_to": "CC Coil Production",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Embossed Coil Production",
+   "link_count": 0,
+   "link_to": "Embossed Coil Production",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CTL Production",
+   "link_count": 0,
+   "link_to": "CTL Production",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Colour Profile Production",
+   "link_count": 0,
+   "link_to": "Colour Profile Production",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Corrugated Sheet Production",
+   "link_count": 0,
+   "link_to": "Corrugated Sheet Production",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Batch Traceability",
+   "link_count": 0,
+   "link_to": "Batch Traceability",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Stage Production Summary",
+   "link_count": 0,
+   "link_to": "Stage Production Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "WIP Batch Stock",
+   "link_count": 0,
+   "link_to": "WIP Batch Stock",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-12-31 23:59:59.000000",
+ "modified_by": "Administrator",
+ "module": "Steel Manufacturing",
+ "name": "Steel Manufacturing",
+ "number_cards": [],
+ "owner": "Administrator",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Green",
+   "doc_view": "New",
+   "label": "New Galvanized Entry",
+   "link_to": "Galvanized Coil Production",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "New",
+   "label": "New CC Coil Entry",
+   "link_to": "CC Coil Production",
+   "type": "DocType"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "New",
+   "label": "New Embossed Entry",
+   "link_to": "Embossed Coil Production",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "New",
+   "label": "New CTL Production",
+   "link_to": "CTL Production",
+   "type": "DocType"
+  },
+  {
+   "color": "Teal",
+   "doc_view": "New",
+   "label": "New Colour Profile",
+   "link_to": "Colour Profile Production",
+   "type": "DocType"
+  },
+  {
+   "color": "Red",
+   "doc_view": "New",
+   "label": "New Corrugated Sheet",
+   "link_to": "Corrugated Sheet Production",
+   "type": "DocType"
+  }
+ ],
+ "title": "Steel Manufacturing",
+ "type": "Workspace"
+}

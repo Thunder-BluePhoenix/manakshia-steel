@@ -19,13 +19,13 @@ import frappe
 from frappe.model.naming import make_autoname
 from frappe.utils import getdate, nowdate
 
-
 # ── Warehouse → Unit Code mapping ─────────────────────────────────────────────
 
 # Abbreviation is now fetched dynamically from the `custom_abbr` field on the Warehouse DocType.
 
 
 # ── Internal helpers ──────────────────────────────────────────────────────────
+
 
 def _year(doc, date_field):
     """Return 4-digit year from the document's date field."""
@@ -47,7 +47,7 @@ def _unit_code(doc):
     if not wh:
         # Fallback to general default if user default not set
         wh = frappe.defaults.get_default("warehouse")
-    
+
     if not wh:
         return ""
 
@@ -58,7 +58,7 @@ def _unit_code(doc):
             return code
     except Exception:
         pass
-    
+
     return ""
 
 
@@ -83,7 +83,7 @@ def _assign(doc, unit, type_code, modifier, year):
     """
     Generate name in format: UNIT-TYPE-MODIFIER_COUNTER-YEAR
     e.g. OT-AJ-G0001-2026 or OT-SI-00001-2026
-    
+
     To ensure counters reset per year while keeping the year at the end:
     1. We use a key that includes the year for tabSeries (e.g. MAB-AJ-G-2026).
     2. We extract the generated counter.
@@ -93,23 +93,23 @@ def _assign(doc, unit, type_code, modifier, year):
         prefix = f"{unit}-{type_code}-{modifier}" if modifier else f"{unit}-{type_code}"
     else:
         prefix = f"{type_code}-{modifier}" if modifier else f"{type_code}"
-        
+
     key = f"{prefix}-{year}"
     padding = 4 if modifier else 5
     hashes = "#" * padding
-    
+
     # Get the name with counter from Frappe (increments tabSeries)
     name_with_counter = make_autoname(f"{key}.{hashes}", doc=doc)
-    
+
     # Extract only the digits from the end
     counter_digits = name_with_counter[-padding:]
-    
+
     # Re-assemble in the requested format
     if modifier:
         doc.name = f"{prefix}{counter_digits}-{year}"
     else:
         doc.name = f"{prefix}-{counter_digits}-{year}"
-    
+
     # Ensure naming_series matches the key used so Frappe doesn't complain
     doc.naming_series = f"{key}.{hashes}"
 
@@ -117,28 +117,28 @@ def _assign(doc, unit, type_code, modifier, year):
 # ── Process → letter mapping (matches Process DocType master names) ────────────
 
 PROCESS_LETTER = {
-    "GENERAL":             "O",
-    "CGL":                 "G",
-    "CTL":                 "B",
-    "CR CORRUGATION":      "Z",
-    "PROFILE (GC)":        "F",
-    "COATING MIXING":      "M",
-    "COLOUR COATING":      "C",
-    "EMBOSSING":           "E",
-    "POWER AND FUEL":      "H",
-    "ROPP":                "P",
-    "SPARE PARTS":         "S",
+    "GENERAL": "O",
+    "CGL": "G",
+    "CTL": "B",
+    "CR CORRUGATION": "Z",
+    "PROFILE (GC)": "F",
+    "COATING MIXING": "M",
+    "COLOUR COATING": "C",
+    "EMBOSSING": "E",
+    "POWER AND FUEL": "H",
+    "ROPP": "P",
+    "SPARE PARTS": "S",
     "PROFILE (ALUMINIUM)": "D",
-    "JOB WORK":            "J",
+    "JOB WORK": "J",
 }
 
 
 # ── Adjustment ────────────────────────────────────────────────────────────────
 
 ADJUSTMENT_MODIFIER = {
-    "GENERAL ADJUSTMENT":        "G",
+    "GENERAL ADJUSTMENT": "G",
     "PHYSICAL STOCK ADJUSTMENT": "P",
-    "YEARLY STOCK ADJUSTMENT":   "Y",
+    "YEARLY STOCK ADJUSTMENT": "Y",
 }
 
 
@@ -154,6 +154,7 @@ def autoname_adjustment(doc, method=None):
 
 
 # ── Stock Entry ───────────────────────────────────────────────────────────────
+
 
 def autoname_stock_entry(doc, method=None):
     """
@@ -188,11 +189,11 @@ def autoname_stock_entry(doc, method=None):
 # ── Purchase Receipt (GRN) ────────────────────────────────────────────────────
 
 PR_MODIFIER = {
-    "RAW MATERIAL":    "R",
-    "CAPITAL GOODS":   "C",
+    "RAW MATERIAL": "R",
+    "CAPITAL GOODS": "C",
     "POWER AND FUELS": "F",
-    "GENERAL GOODS":   "G",
-    "JOB WORK":        "J",
+    "GENERAL GOODS": "G",
+    "JOB WORK": "J",
 }
 
 
@@ -211,6 +212,7 @@ def autoname_purchase_receipt(doc, method=None):
 
 # ── Purchase Receipt Return (GRN Return) ──────────────────────────────────────
 
+
 def autoname_grn_return(doc, method=None):
     """OT-GR-00001-2026"""
     unit = _unit_code(doc)
@@ -221,9 +223,9 @@ def autoname_grn_return(doc, method=None):
 # ── Waybill ───────────────────────────────────────────────────────────────────
 
 WAYBILL_MODIFIER = {
-    "General":  None,
+    "General": None,
     "Job work": "J",
-    "Export":   "E",
+    "Export": "E",
 }
 
 
@@ -241,6 +243,7 @@ def autoname_waybill(doc, method=None):
 
 # ── Waybill Return ────────────────────────────────────────────────────────────
 
+
 def autoname_waybill_return(doc, method=None):
     """OT-SR-00001-2026"""
     unit = _unit_code(doc)
@@ -249,6 +252,7 @@ def autoname_waybill_return(doc, method=None):
 
 
 # ── ERPNext built-in DocTypes ─────────────────────────────────────────────────
+
 
 def autoname_material_request(doc, method=None):
     """OT-MR-00001-2026"""
@@ -283,3 +287,21 @@ def autoname_production_order(doc, method=None):
     unit = _unit_code(doc)
     year = _year(doc, "order_date")
     _assign(doc, unit, "PRO", None, year)
+
+
+MFG_PREFIX = {
+    "Galvanized Coil Production": "GC",
+    "CC Coil Production": "CC",
+    "Embossed Coil Production": "EM",
+    "CTL Production": "CTL",
+    "Colour Profile Production": "CPRO",
+    "Corrugated Sheet Production": "CS",
+}
+
+
+def autoname_manufacturing(doc, method=None):
+    """OT-GC-00001-2026"""
+    unit = _unit_code(doc)
+    year = _year(doc, "date")
+    prefix = MFG_PREFIX.get(doc.doctype, "MFG")
+    _assign(doc, unit, prefix, None, year)

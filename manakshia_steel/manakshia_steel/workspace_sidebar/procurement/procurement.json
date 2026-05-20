@@ -1,0 +1,73 @@
+{
+ "app": "manakshia_steel",
+ "creation": "2026-04-24 10:03:35.008561",
+ "docstatus": 0,
+ "doctype": "Workspace Sidebar",
+ "header_icon": "table_2",
+ "idx": 1,
+ "items": [
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "procurement",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Home",
+   "link_to": "Procurement",
+   "link_type": "Workspace",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Material Request",
+   "link_to": "Material Request",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Supplier Quotation",
+   "link_to": "Supplier Quotation",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Request for Quotation",
+   "link_to": "Request for Quotation",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Purchase Order",
+   "link_to": "Purchase Order",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-05-19 07:35:09.532072",
+ "modified_by": "Administrator",
+ "module": "Buying",
+ "name": "Procurement",
+ "owner": "Administrator",
+ "standard": 1,
+ "title": "Procurement"
+}

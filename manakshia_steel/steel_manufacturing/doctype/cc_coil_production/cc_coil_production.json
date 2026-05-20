@@ -1,0 +1,179 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:OT-CC-.YYYY.-.#####",
+ "creation": "2026-05-19 06:07:58.025752",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "coil_issue_no",
+  "date",
+  "day",
+  "shift",
+  "operator_name",
+  "mc_no",
+  "speed",
+  "column_break_1",
+  "process_type",
+  "remarks",
+  "section_break_entry",
+  "entry_items",
+  "section_break_exit",
+  "exit_items",
+  "totals_section",
+  "total_input_wt",
+  "total_output_wt",
+  "stock_entry_ref",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "coil_issue_no",
+   "fieldtype": "Data",
+   "label": "Coil Issue No."
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "day",
+   "fieldtype": "Data",
+   "label": "Day",
+   "read_only": 1
+  },
+  {
+   "fieldname": "shift",
+   "fieldtype": "Select",
+   "label": "Shift",
+   "options": "\nA\nB\nC\nD\nGeneral"
+  },
+  {
+   "fieldname": "operator_name",
+   "fieldtype": "Data",
+   "label": "Operator Name"
+  },
+  {
+   "fieldname": "mc_no",
+   "fieldtype": "Data",
+   "label": "MC No."
+  },
+  {
+   "fieldname": "speed",
+   "fieldtype": "Float",
+   "label": "Speed"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "process_type",
+   "fieldtype": "Select",
+   "label": "Process Type",
+   "options": "\nGP/AC COL\nPRIM/V-SZ\nPRIM V-SIZ COL"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "section_break_entry",
+   "fieldtype": "Section Break",
+   "label": "Entry"
+  },
+  {
+   "fieldname": "entry_items",
+   "fieldtype": "Table",
+   "label": "Select Coils",
+   "options": "CC Coil Entry"
+  },
+  {
+   "fieldname": "section_break_exit",
+   "fieldtype": "Section Break",
+   "label": "Exit"
+  },
+  {
+   "fieldname": "exit_items",
+   "fieldtype": "Table",
+   "label": "Produced Coils",
+   "options": "CC Coil Exit"
+  },
+  {
+   "fieldname": "stock_entry_ref",
+   "fieldtype": "Link",
+   "label": "Stock Entry Reference",
+   "options": "Stock Entry",
+   "read_only": 1,
+   "no_copy": 1,
+   "print_hide": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "CC Coil Production",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "totals_section",
+   "fieldtype": "Section Break",
+   "label": "Weight Summary"
+  },
+  {
+   "fieldname": "total_input_wt",
+   "fieldtype": "Float",
+   "label": "Total Input Weight (Kg)",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "total_output_wt",
+   "fieldtype": "Float",
+   "label": "Total Output Weight (Kg)",
+   "read_only": 1,
+   "in_list_view": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-05-19 06:07:58.025752",
+ "modified_by": "Administrator",
+ "module": "Steel Manufacturing",
+ "name": "CC Coil Production",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

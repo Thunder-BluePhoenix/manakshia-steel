@@ -20,7 +20,6 @@ After running:
 
 import frappe
 
-
 # ── 1. Transaction parent DocTypes to delete ──────────────────────────────────
 # Order matters: child tables are auto-discovered and deleted first.
 TRANSACTION_DOCTYPES = [
@@ -30,7 +29,6 @@ TRANSACTION_DOCTYPES = [
     "Waybill Return",
     "Production Order",
     "Purchase Receipt Return",
-
     # ── ERPNext Buying ───────────────────────────────────────────────────────
     "Purchase Receipt",
     "Purchase Order",
@@ -38,32 +36,29 @@ TRANSACTION_DOCTYPES = [
     "Supplier Quotation",
     "Request for Quotation",
     "Material Request",
-
     # ── ERPNext Selling ──────────────────────────────────────────────────────
     "Delivery Note",
     "Sales Invoice",
     "Sales Order",
     "Quotation",
-
     # ── ERPNext Stock ────────────────────────────────────────────────────────
     "Stock Entry",
     "Stock Reconciliation",
-
     # ── ERPNext Accounts ─────────────────────────────────────────────────────
     "Payment Entry",
     "Journal Entry",
-    "Purchase Invoice",   # already listed above but harmless duplicate
+    "Purchase Invoice",  # already listed above but harmless duplicate
 ]
 
 # ── 2. Standalone ledger / supporting tables (not DocType parents) ────────────
 STANDALONE_TABLES = [
-    ("GL Entry",                  "General Ledger"),
-    ("Payment Ledger Entry",      "Payment Ledger"),
-    ("Stock Ledger Entry",        "Stock Ledger"),
-    ("Serial and Batch Bundle",   "Serial & Batch Bundles"),   # parent
-    ("Serial and Batch Entry",    "Serial & Batch Entries"),   # its child table
-    ("Bin",                       "Stock Bin balances"),
-    ("Serial No",                 "Serial Nos"),
+    ("GL Entry", "General Ledger"),
+    ("Payment Ledger Entry", "Payment Ledger"),
+    ("Stock Ledger Entry", "Stock Ledger"),
+    ("Serial and Batch Bundle", "Serial & Batch Bundles"),  # parent
+    ("Serial and Batch Entry", "Serial & Batch Entries"),  # its child table
+    ("Bin", "Stock Bin balances"),
+    ("Serial No", "Serial Nos"),
 ]
 
 # ── 3. Series prefixes to reset ─────────────────────────────────────────────────
@@ -71,24 +66,39 @@ STANDALONE_TABLES = [
 # in tabSeries will look like "OT-AJ-G-2026" or "MAB-IS-O-2026".
 # We use LIKE patterns to match the specific type codes in the middle or start.
 SERIES_PATTERNS = [
-    "%-AJ-%", "AJ-%",        # Adjustment
-    "%-IS-%", "IS-%",        # Material Issue
-    "%-FG-%", "FG-%",        # Material Receipt
-    "%-SI-%", "SI-%",        # Stock Transfer In
-    "%-SO-%", "SO-%",        # Stock Transfer Out
-    "%-GN-%", "GN-%",        # Purchase Receipt (GRN)
-    "%-GR-%", "GR-%",        # Purchase Receipt Return
-    "%-SL-%", "SL-%",        # Waybill
-    "%-SR-%", "SR-%",        # Waybill Return
-    "%-MR-%", "MR-%",        # Material Request
-    "%-SQ-%", "SQ-%",        # Supplier Quotation
-    "%-RFQ-%", "RFQ-%",      # Request for Quotation
-    "%-PO-%", "PO-%",        # Purchase Order
-    "%-PRO-%", "PRO-%",      # Production Order
+    "%-AJ-%",
+    "AJ-%",  # Adjustment
+    "%-IS-%",
+    "IS-%",  # Material Issue
+    "%-FG-%",
+    "FG-%",  # Material Receipt
+    "%-SI-%",
+    "SI-%",  # Stock Transfer In
+    "%-SO-%",
+    "SO-%",  # Stock Transfer Out
+    "%-GN-%",
+    "GN-%",  # Purchase Receipt (GRN)
+    "%-GR-%",
+    "GR-%",  # Purchase Receipt Return
+    "%-SL-%",
+    "SL-%",  # Waybill
+    "%-SR-%",
+    "SR-%",  # Waybill Return
+    "%-MR-%",
+    "MR-%",  # Material Request
+    "%-SQ-%",
+    "SQ-%",  # Supplier Quotation
+    "%-RFQ-%",
+    "RFQ-%",  # Request for Quotation
+    "%-PO-%",
+    "PO-%",  # Purchase Order
+    "%-PRO-%",
+    "PRO-%",  # Production Order
 ]
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+
 
 def _truncate(table_name, label):
     """DELETE all rows from a Frappe DocType table. Skips if table doesn't exist."""
@@ -129,29 +139,35 @@ def _reset_series():
     for pattern in SERIES_PATTERNS:
         rows = frappe.db.sql(
             "SELECT name, current FROM tabSeries WHERE name LIKE %s",
-            (pattern,), as_dict=True
+            (pattern,),
+            as_dict=True,
         )
         for row in rows:
-            frappe.db.sql("UPDATE tabSeries SET current = 0 WHERE name = %s", (row.name,))
+            frappe.db.sql(
+                "UPDATE tabSeries SET current = 0 WHERE name = %s", (row.name,)
+            )
             print(f"  ✓  Reset  {row.name:<50s}  {row.current} → 0")
             total += 1
 
     if total == 0:
-        print("  (no matching series found — counters were already 0 or not yet created)")
+        print(
+            "  (no matching series found — counters were already 0 or not yet created)"
+        )
     else:
         print(f"\n  Total series reset: {total}")
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
+
 def run():
     frappe.set_user("Administrator")
 
-    print(f"\n{'='*68}")
-    print(f"  ⚠  GO-LIVE TRANSACTION RESET")
+    print(f"\n{'=' * 68}")
+    print("  ⚠  GO-LIVE TRANSACTION RESET")
     print(f"  Site     : {frappe.local.site}")
-    print(f"  Clearing : all transactions, GL, SLE, Bin, Serial/Batch, Series")
-    print(f"{'='*68}\n")
+    print("  Clearing : all transactions, GL, SLE, Bin, Serial/Batch, Series")
+    print(f"{'=' * 68}\n")
 
     # ── Step 1: Delete transactions (children auto-discovered) ──────────────
     seen = set()
@@ -173,8 +189,8 @@ def run():
     # ── Commit everything ────────────────────────────────────────────────────
     frappe.db.commit()
 
-    print(f"\n{'='*68}")
-    print(f"  ✅  DONE — database is now transaction-free.")
-    print(f"  Master data (Items, Suppliers, Customers, Warehouses) preserved.")
-    print(f"  Next document of each type will start from 00001.")
-    print(f"{'='*68}\n")
+    print(f"\n{'=' * 68}")
+    print("  ✅  DONE — database is now transaction-free.")
+    print("  Master data (Items, Suppliers, Customers, Warehouses) preserved.")
+    print("  Next document of each type will start from 00001.")
+    print(f"{'=' * 68}\n")

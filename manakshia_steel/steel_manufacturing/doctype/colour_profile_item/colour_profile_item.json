@@ -1,0 +1,124 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-19 06:07:58.746836",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "colour",
+  "pattern",
+  "coil_no",
+  "coil_wt",
+  "width",
+  "thick",
+  "length",
+  "product_name",
+  "uom",
+  "qty_pcs",
+  "qnty_kg",
+  "scrap_pcs",
+  "scrap_wt",
+  "brand",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "colour",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Colour"
+  },
+  {
+   "fieldname": "pattern",
+   "fieldtype": "Data",
+   "label": "Pattern"
+  },
+  {
+   "fieldname": "coil_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Coil No. (Batch)",
+   "options": "Batch",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "coil_wt",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Coil Wt (Kg)"
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Float",
+   "label": "Width (mm)"
+  },
+  {
+   "fieldname": "thick",
+   "fieldtype": "Float",
+   "label": "Thick (mm)"
+  },
+  {
+   "fieldname": "length",
+   "fieldtype": "Float",
+   "label": "Length (m)"
+  },
+  {
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "label": "Product Name"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Data",
+   "label": "UOM"
+  },
+  {
+   "fieldname": "qty_pcs",
+   "fieldtype": "Float",
+   "label": "Qty (Pcs)"
+  },
+  {
+   "fieldname": "qnty_kg",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty (Kg)"
+  },
+  {
+   "fieldname": "scrap_pcs",
+   "fieldtype": "Float",
+   "label": "Scrap (Pcs)"
+  },
+  {
+   "fieldname": "scrap_wt",
+   "fieldtype": "Float",
+   "label": "Scrap Wt (Kg)"
+  },
+  {
+   "fieldname": "brand",
+   "fieldtype": "Data",
+   "label": "Brand"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Data",
+   "label": "Remarks"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-20 09:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "Steel Manufacturing",
+ "name": "Colour Profile Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

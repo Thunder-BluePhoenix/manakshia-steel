@@ -1,0 +1,1 @@
+# Steel Manufacturing doctypes init

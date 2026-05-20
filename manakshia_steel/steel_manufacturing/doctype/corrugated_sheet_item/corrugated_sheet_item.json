@@ -1,0 +1,124 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-19 06:07:58.950234",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pattern",
+  "colour",
+  "packet_no",
+  "packet_wt",
+  "product_name",
+  "uom",
+  "quantity",
+  "qnty_kg",
+  "scrap_sheets",
+  "scrap_wt",
+  "brand",
+  "thick",
+  "width",
+  "length",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "pattern",
+   "fieldtype": "Data",
+   "label": "Pattern"
+  },
+  {
+   "fieldname": "colour",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Colour"
+  },
+  {
+   "fieldname": "packet_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Packet No. (Batch)",
+   "options": "Batch",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "packet_wt",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Packet Wt (Kg)"
+  },
+  {
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "label": "Product Name"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Data",
+   "label": "UOM"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "label": "Quantity (Pcs)"
+  },
+  {
+   "fieldname": "qnty_kg",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty (Kg)"
+  },
+  {
+   "fieldname": "scrap_sheets",
+   "fieldtype": "Float",
+   "label": "Scrap (Sheets)"
+  },
+  {
+   "fieldname": "scrap_wt",
+   "fieldtype": "Float",
+   "label": "Scrap Wt (Kg)"
+  },
+  {
+   "fieldname": "brand",
+   "fieldtype": "Data",
+   "label": "Brand"
+  },
+  {
+   "fieldname": "thick",
+   "fieldtype": "Float",
+   "label": "Thick (mm)"
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Float",
+   "label": "Width (mm)"
+  },
+  {
+   "fieldname": "length",
+   "fieldtype": "Float",
+   "label": "Length (m)"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Data",
+   "label": "Remarks"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-20 09:15:00.000000",
+ "modified_by": "Administrator",
+ "module": "Steel Manufacturing",
+ "name": "Corrugated Sheet Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

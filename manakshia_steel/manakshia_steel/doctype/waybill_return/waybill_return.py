@@ -1,11 +1,12 @@
+import erpnext.stock.doctype.stock_ledger_entry.stock_ledger_entry as sle_module
+import erpnext.stock.serial_batch_bundle as sbb
 import frappe
-from frappe import _
-from frappe.utils import flt
+from erpnext.accounts.utils import validate_fiscal_year
 from erpnext.controllers.stock_controller import StockController
 from erpnext.stock.stock_ledger import make_sl_entries
-import erpnext.stock.serial_batch_bundle as sbb
-import erpnext.stock.doctype.stock_ledger_entry.stock_ledger_entry as sle_module
-from erpnext.accounts.utils import validate_fiscal_year
+from frappe import _
+from frappe.utils import flt
+
 # ─────────────────────────────────────────────────────────────────────────────
 #  Monkey-patch 1 – StockLedgerEntry.on_submit
 #
@@ -29,14 +30,17 @@ if not getattr(sle_module.StockLedgerEntry, "_is_manakshia_patched", False):
     def _patched_sle_on_submit(self):
         if self.voucher_type in _SKIP_SERIAL_BATCH_VOUCHERS:
             from erpnext.stock.stock_ledger import update_entries_after
-            update_entries_after({
-                "item_code": self.item_code,
-                "warehouse": self.warehouse,
-                "posting_date": self.posting_date,
-                "posting_time": self.posting_time,
-                "creation": self.creation,
-                "via_landed_cost_voucher": False,
-            })
+
+            update_entries_after(
+                {
+                    "item_code": self.item_code,
+                    "warehouse": self.warehouse,
+                    "posting_date": self.posting_date,
+                    "posting_time": self.posting_time,
+                    "creation": self.creation,
+                    "via_landed_cost_voucher": False,
+                }
+            )
             return
         _original_sle_on_submit(self)
 
@@ -74,7 +78,6 @@ if not getattr(sbb.SerialBatchBundle, "_is_manakshia_patched", False):
 
 
 class WaybillReturn(StockController):
-
     # ── ERPNext controller stubs ──────────────────────────────────────────────
 
     def set_incoming_rate(self):
@@ -95,7 +98,7 @@ class WaybillReturn(StockController):
         self.set_company()
         self.set_child_stock_fields()
         self.set_exchange_rate()
-        
+
         if self.date:
             fiscal_year = frappe.defaults.get_user_default("fiscal_year")
             if fiscal_year:
@@ -143,10 +146,9 @@ class WaybillReturn(StockController):
 
     def set_company(self):
         if not self.get("company"):
-            self.company = (
-                frappe.db.get_default("company")
-                or frappe.defaults.get_user_default("Company")
-            )
+            self.company = frappe.db.get_default(
+                "company"
+            ) or frappe.defaults.get_user_default("Company")
             if not self.company:
                 companies = frappe.get_all("Company", limit=1)
                 if companies:
@@ -179,27 +181,31 @@ class WaybillReturn(StockController):
             actual_qty = flt(item.qty) * qty_multiplier
 
             sl_entries.append(
-                frappe._dict({
-                    "item_code": item.item_code,
-                    "warehouse": self.to_warehouse,
-                    "qty": actual_qty,
-                    "actual_qty": actual_qty,
-                    "incoming_rate": flt(item.get("rate")),
-                    "company": self.company,
-                    "voucher_type": self.doctype,
-                    "voucher_no": self.name,
-                    "voucher_detail_no": item.name,
-                    "posting_date": self.get("date") or frappe.utils.today(),
-                    "posting_time": frappe.utils.nowtime(),
-                    "is_cancelled": 1 if is_cancelled else 0,
-                    "allow_negative_stock": 1,
-                    # Embed the outward bundle created in on_submit.
-                    # On cancel the bundle is already cancelled; pass None so
-                    # the reversal SLE does not re-reference it.
-                    "serial_and_batch_bundle": (
-                        item.get("serial_and_batch_bundle") if not is_cancelled else None
-                    ),
-                })
+                frappe._dict(
+                    {
+                        "item_code": item.item_code,
+                        "warehouse": self.to_warehouse,
+                        "qty": actual_qty,
+                        "actual_qty": actual_qty,
+                        "incoming_rate": flt(item.get("rate")),
+                        "company": self.company,
+                        "voucher_type": self.doctype,
+                        "voucher_no": self.name,
+                        "voucher_detail_no": item.name,
+                        "posting_date": self.get("date") or frappe.utils.today(),
+                        "posting_time": frappe.utils.nowtime(),
+                        "is_cancelled": 1 if is_cancelled else 0,
+                        "allow_negative_stock": 1,
+                        # Embed the outward bundle created in on_submit.
+                        # On cancel the bundle is already cancelled; pass None so
+                        # the reversal SLE does not re-reference it.
+                        "serial_and_batch_bundle": (
+                            item.get("serial_and_batch_bundle")
+                            if not is_cancelled
+                            else None
+                        ),
+                    }
+                )
             )
         return sl_entries
 
@@ -318,12 +324,15 @@ class WaybillReturn(StockController):
         bundle.company = self.company
 
         for entry in source.entries:
-            bundle.append("entries", {
-                "serial_no": entry.serial_no,
-                "batch_no": entry.batch_no,
-                "qty": -abs(flt(entry.qty)),   # Outward → negative qty
-                "warehouse": self.to_warehouse,
-            })
+            bundle.append(
+                "entries",
+                {
+                    "serial_no": entry.serial_no,
+                    "batch_no": entry.batch_no,
+                    "qty": -abs(flt(entry.qty)),  # Outward → negative qty
+                    "warehouse": self.to_warehouse,
+                },
+            )
 
         if not bundle.entries:
             return None

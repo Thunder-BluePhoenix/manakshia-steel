@@ -1,6 +1,5 @@
 import frappe
 
-
 # Doctypes and their date fields for fiscal year filtering
 FISCAL_YEAR_FILTER_DOCTYPES = {
     "Stock Entry": "posting_date",
@@ -17,6 +16,13 @@ FISCAL_YEAR_FILTER_DOCTYPES = {
     "Purchase Receipt Return": "posting_date",
     "Waybill": "date",
     "Waybill Return": "date",
+    # ── 6 Steel Manufacturing Production Doctypes ─────────────────────────────
+    "Galvanized Coil Production": "date",
+    "Embossed Coil Production": "date",
+    "CC Coil Production": "date",
+    "Colour Profile Production": "date",
+    "Corrugated Sheet Production": "date",
+    "CTL Production": "date",
 }
 
 
@@ -112,6 +118,7 @@ def pqc_waybill(user=None):
 
 def pqc_waybill_return(user=None):
     return get_fiscal_year_condition("Waybill Return")
+
 
 def pqc_request_for_quotation(user=None):
     return get_fiscal_year_condition("Request for Quotation")

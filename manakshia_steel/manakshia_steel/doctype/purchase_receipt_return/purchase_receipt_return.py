@@ -1,13 +1,13 @@
 # Copyright (c) 2026, Blue Phoenix and contributors
 # For license information, please see license.txt
 
+import erpnext.stock.doctype.stock_ledger_entry.stock_ledger_entry as sle_module
+import erpnext.stock.serial_batch_bundle as sbb
 import frappe
-from frappe import _
-from frappe.utils import flt
 from erpnext.controllers.stock_controller import StockController
 from erpnext.stock.stock_ledger import make_sl_entries
-import erpnext.stock.serial_batch_bundle as sbb
-import erpnext.stock.doctype.stock_ledger_entry.stock_ledger_entry as sle_module
+from frappe import _
+from frappe.utils import flt
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Monkey-patch 1 – StockLedgerEntry.on_submit
@@ -32,14 +32,17 @@ if not getattr(sle_module.StockLedgerEntry, "_is_manakshia_patched", False):
     def _patched_sle_on_submit(self):
         if self.voucher_type in _SKIP_SERIAL_BATCH_VOUCHERS:
             from erpnext.stock.stock_ledger import update_entries_after
-            update_entries_after({
-                "item_code": self.item_code,
-                "warehouse": self.warehouse,
-                "posting_date": self.posting_date,
-                "posting_time": self.posting_time,
-                "creation": self.creation,
-                "via_landed_cost_voucher": False,
-            })
+
+            update_entries_after(
+                {
+                    "item_code": self.item_code,
+                    "warehouse": self.warehouse,
+                    "posting_date": self.posting_date,
+                    "posting_time": self.posting_time,
+                    "creation": self.creation,
+                    "via_landed_cost_voucher": False,
+                }
+            )
             return
         _original_sle_on_submit(self)
 
@@ -77,7 +80,6 @@ if not getattr(sbb.SerialBatchBundle, "_is_manakshia_patched", False):
 
 
 class PurchaseReceiptReturn(StockController):
-
     # ── ERPNext controller stubs ──────────────────────────────────────────────
 
     def set_incoming_rate(self):
@@ -162,10 +164,9 @@ class PurchaseReceiptReturn(StockController):
 
     def set_company(self):
         if not self.get("company"):
-            self.company = (
-                frappe.db.get_default("company")
-                or frappe.defaults.get_user_default("Company")
-            )
+            self.company = frappe.db.get_default(
+                "company"
+            ) or frappe.defaults.get_user_default("Company")
             if not self.company:
                 companies = frappe.get_all("Company", limit=1)
                 if companies:
@@ -227,30 +228,36 @@ class PurchaseReceiptReturn(StockController):
             qty = -1 * abs(flt(item.qty))
 
             sl_entries.append(
-                frappe._dict({
-                    "item_code": item.item_code,
-                    "warehouse": source_warehouse,
-                    "qty": qty,
-                    "actual_qty": qty,
-                    "company": self.company,
-                    "voucher_type": self.doctype,
-                    "voucher_no": self.name,
-                    "voucher_detail_no": item.name,
-                    "posting_date": (
-                        self.get("posting_date") or self.get("date") or frappe.utils.today()
-                    ),
-                    "posting_time": (
-                        self.get("posting_time") or frappe.utils.nowtime()
-                    ),
-                    "is_cancelled": 1 if is_cancelled else 0,
-                    # Outward bundle created in on_submit.
-                    # On cancel the bundle is already cancelled; pass None so
-                    # the reversal SLE does not re-reference it.
-                    "serial_and_batch_bundle": (
-                        item.get("serial_and_batch_bundle") if not is_cancelled else None
-                    ),
-                    "dependant_sle_voucher_detail_no": item.name,
-                })
+                frappe._dict(
+                    {
+                        "item_code": item.item_code,
+                        "warehouse": source_warehouse,
+                        "qty": qty,
+                        "actual_qty": qty,
+                        "company": self.company,
+                        "voucher_type": self.doctype,
+                        "voucher_no": self.name,
+                        "voucher_detail_no": item.name,
+                        "posting_date": (
+                            self.get("posting_date")
+                            or self.get("date")
+                            or frappe.utils.today()
+                        ),
+                        "posting_time": (
+                            self.get("posting_time") or frappe.utils.nowtime()
+                        ),
+                        "is_cancelled": 1 if is_cancelled else 0,
+                        # Outward bundle created in on_submit.
+                        # On cancel the bundle is already cancelled; pass None so
+                        # the reversal SLE does not re-reference it.
+                        "serial_and_batch_bundle": (
+                            item.get("serial_and_batch_bundle")
+                            if not is_cancelled
+                            else None
+                        ),
+                        "dependant_sle_voucher_detail_no": item.name,
+                    }
+                )
             )
         return sl_entries
 
@@ -318,7 +325,9 @@ class PurchaseReceiptReturn(StockController):
                 continue
             processed_source_bundles.add(source_bundle)
 
-            bundle_name = self._make_outward_bundle(item, source_bundle, source_warehouse)
+            bundle_name = self._make_outward_bundle(
+                item, source_bundle, source_warehouse
+            )
             if bundle_name:
                 frappe.db.set_value(
                     "Purchase Receipt Item",
@@ -381,12 +390,15 @@ class PurchaseReceiptReturn(StockController):
         bundle.company = self.company
 
         for entry in source.entries:
-            bundle.append("entries", {
-                "serial_no": entry.serial_no,
-                "batch_no": entry.batch_no,
-                "qty": -abs(flt(entry.qty)),   # Outward → negative qty
-                "warehouse": warehouse,
-            })
+            bundle.append(
+                "entries",
+                {
+                    "serial_no": entry.serial_no,
+                    "batch_no": entry.batch_no,
+                    "qty": -abs(flt(entry.qty)),  # Outward → negative qty
+                    "warehouse": warehouse,
+                },
+            )
 
         if not bundle.entries:
             return None
@@ -429,18 +441,22 @@ class PurchaseReceiptReturn(StockController):
 
     def make_gl_entries(self):
         import erpnext
+
         if not frappe.utils.cint(erpnext.is_perpetual_inventory_enabled(self.company)):
             return
         gl_entries = self.get_custom_gl_entries()
         if gl_entries:
             from erpnext.accounts.general_ledger import make_gl_entries
+
             make_gl_entries(gl_entries)
 
     def make_gl_entries_on_cancel(self):
         import erpnext
+
         if not frappe.utils.cint(erpnext.is_perpetual_inventory_enabled(self.company)):
             return
         from erpnext.accounts.general_ledger import make_reverse_gl_entries
+
         make_reverse_gl_entries(voucher_type=self.doctype, voucher_no=self.name)
 
     def get_custom_gl_entries(self):
@@ -450,15 +466,16 @@ class PurchaseReceiptReturn(StockController):
             "Company", self.company, "default_expense_account"
         )
         if not difference_account:
-            frappe.throw(_(
-                "Please define a Default Expense Account in the Company master to "
-                "process accounting entries for Purchase Receipt Return."
-            ))
+            frappe.throw(
+                _(
+                    "Please define a Default Expense Account in the Company master to "
+                    "process accounting entries for Purchase Receipt Return."
+                )
+            )
 
         inventory_account_map = self.get_inventory_account_map()
-        doc_cost_center = (
-            getattr(self, "cost_center", None)
-            or frappe.get_cached_value("Company", self.company, "cost_center")
+        doc_cost_center = getattr(self, "cost_center", None) or frappe.get_cached_value(
+            "Company", self.company, "cost_center"
         )
         doc_remarks = getattr(self, "remarks", None) or _(
             "Accounting Entry for Purchase Receipt Return"
@@ -482,14 +499,18 @@ class PurchaseReceiptReturn(StockController):
                 continue
 
             warehouse_account = self.get_inventory_account_dict(
-                frappe._dict({"item_code": item.item_code, "warehouse": source_warehouse}),
+                frappe._dict(
+                    {"item_code": item.item_code, "warehouse": source_warehouse}
+                ),
                 inventory_account_map,
                 warehouse_field="warehouse",
             ).get("account")
 
             if not warehouse_account:
                 frappe.throw(
-                    _("Inventory account not found for warehouse {0}").format(source_warehouse)
+                    _("Inventory account not found for warehouse {0}").format(
+                        source_warehouse
+                    )
                 )
 
             amount = flt(abs(item.qty)) * flt(
@@ -504,25 +525,31 @@ class PurchaseReceiptReturn(StockController):
 
             # Debit the difference/expense account (stock is leaving the company)
             gl_entries.append(
-                self.get_gl_dict({
-                    "account": difference_account,
-                    "against": warehouse_account,
-                    "cost_center": item_cost_center,
-                    "remarks": doc_remarks,
-                    "debit": amount,
-                    "debit_in_account_currency": amount,
-                }, item=item)
+                self.get_gl_dict(
+                    {
+                        "account": difference_account,
+                        "against": warehouse_account,
+                        "cost_center": item_cost_center,
+                        "remarks": doc_remarks,
+                        "debit": amount,
+                        "debit_in_account_currency": amount,
+                    },
+                    item=item,
+                )
             )
             # Credit the source warehouse account
             gl_entries.append(
-                self.get_gl_dict({
-                    "account": warehouse_account,
-                    "against": difference_account,
-                    "cost_center": item_cost_center,
-                    "remarks": doc_remarks,
-                    "credit": amount,
-                    "credit_in_account_currency": amount,
-                }, item=item)
+                self.get_gl_dict(
+                    {
+                        "account": warehouse_account,
+                        "against": difference_account,
+                        "cost_center": item_cost_center,
+                        "remarks": doc_remarks,
+                        "credit": amount,
+                        "credit_in_account_currency": amount,
+                    },
+                    item=item,
+                )
             )
 
         return gl_entries

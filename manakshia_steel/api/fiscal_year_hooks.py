@@ -1,7 +1,6 @@
 import frappe
 from frappe.utils import getdate
 
-
 YEAR_DOCTYPES_DATE_FIELD = {
     "Stock Entry": "posting_date",
     "Purchase Receipt": "posting_date",
@@ -74,16 +73,16 @@ def validate_fiscal_year(doc, method=None):
     date_field = YEAR_DOCTYPES_DATE_FIELD.get(doc.doctype)
     if not date_field:
         return
-        
+
     date_val = doc.get(date_field)
     if not date_val:
         return
-        
+
     try:
         date_obj = getdate(date_val)
     except Exception:
         return
-        
+
     try:
         fy = frappe.get_cached_doc("Fiscal Year", fiscal_year)
     except Exception:
@@ -100,7 +99,7 @@ def validate_fiscal_year(doc, method=None):
         frappe.throw(
             f"The <b>{df_label}</b> ({date_val}) does not belong to your currently active Fiscal Year "
             f"({fy.year_start_date} to {fy.year_end_date}). Please change it.",
-            title="Fiscal Year Validation"
+            title="Fiscal Year Validation",
         )
 
 
@@ -116,26 +115,33 @@ def validate_warehouse(doc, method=None):
     if not warehouse:
         return
 
-    if doc.doctype in ["Purchase Receipt", "Delivery Note", "Purchase Order", "Material Request", "Supplier Quotation", "Purchase Invoice"]:
+    if doc.doctype in [
+        "Purchase Receipt",
+        "Delivery Note",
+        "Purchase Order",
+        "Material Request",
+        "Supplier Quotation",
+        "Purchase Invoice",
+    ]:
         if doc.get("set_warehouse") and doc.get("set_warehouse") != warehouse:
             frappe.throw(
                 f"The <b>Target Warehouse</b> ({doc.get('set_warehouse')}) does not match your currently active Unit ({warehouse}). Please change it or switch units.",
-                title="Unit Validation"
+                title="Unit Validation",
             )
-            
+
     elif doc.doctype in ["Stock Entry", "Waybill", "Waybill Return"]:
         from_wh = doc.get("from_warehouse")
         to_wh = doc.get("to_warehouse")
-        
+
         if from_wh and from_wh != warehouse:
             frappe.throw(
                 f"The <b>Source Warehouse</b> ({from_wh}) must be your active Unit ({warehouse}).",
-                title="Unit Validation"
+                title="Unit Validation",
             )
         elif not from_wh and to_wh and to_wh != warehouse:
-             frappe.throw(
+            frappe.throw(
                 f"For incoming stock, the <b>Target Warehouse</b> ({to_wh}) must be your active Unit ({warehouse}).",
-                title="Unit Validation"
+                title="Unit Validation",
             )
 
     elif doc.doctype == "Production Order":
@@ -143,5 +149,5 @@ def validate_warehouse(doc, method=None):
         if source_wh and source_wh != warehouse:
             frappe.throw(
                 f"The <b>Source Warehouse</b> ({source_wh}) must be your active Unit ({warehouse}).",
-                title="Unit Validation"
+                title="Unit Validation",
             )

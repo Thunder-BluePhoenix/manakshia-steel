@@ -1,0 +1,81 @@
+{
+ "actions": [],
+ "creation": "2026-05-19 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "warehouse_settings_section",
+  "rm_warehouse",
+  "wip_warehouse",
+  "column_break_wh",
+  "fg_warehouse",
+  "scrap_warehouse"
+ ],
+ "fields": [
+  {
+   "fieldname": "warehouse_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Warehouse Configuration"
+  },
+  {
+   "fieldname": "rm_warehouse",
+   "fieldtype": "Link",
+   "label": "Raw Material Warehouse",
+   "options": "Warehouse",
+   "reqd": 1,
+   "default": "Stores - ML",
+   "description": "Source warehouse for CR Coil / ALU Coil inputs (Galvanizing stage)"
+  },
+  {
+   "fieldname": "wip_warehouse",
+   "fieldtype": "Link",
+   "label": "WIP Warehouse",
+   "options": "Warehouse",
+   "reqd": 1,
+   "default": "Work In Progress - ML",
+   "description": "Work-in-progress warehouse for semi-finished coils and sheets"
+  },
+  {
+   "fieldname": "column_break_wh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fg_warehouse",
+   "fieldtype": "Link",
+   "label": "Finished Goods Warehouse",
+   "options": "Warehouse",
+   "reqd": 1,
+   "default": "Finished Goods - ML",
+   "description": "Destination warehouse for Profile and Corrugation final output"
+  },
+  {
+   "fieldname": "scrap_warehouse",
+   "fieldtype": "Link",
+   "label": "Scrap Warehouse",
+   "options": "Warehouse",
+   "reqd": 1,
+   "default": "Scrap Warehouse - ML",
+   "description": "Destination warehouse for scrap weight from all production stages"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-05-19 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Steel Manufacturing",
+ "name": "Steel Manufacturing Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

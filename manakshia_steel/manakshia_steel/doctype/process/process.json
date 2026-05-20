@@ -13,7 +13,10 @@
   "column_break_xnvj",
   "source_warehouse",
   "target_warehouse",
-  "is_active"
+  "is_active",
+  "section_break_stage",
+  "stage_code",
+  "stage_mappings"
  ],
  "fields": [
   {
@@ -53,12 +56,29 @@
    "fieldname": "is_active",
    "fieldtype": "Check",
    "label": "Is Active"
+  },
+  {
+   "fieldname": "section_break_stage",
+   "fieldtype": "Section Break",
+   "label": "Manufacturing Stage Configuration"
+  },
+  {
+   "fieldname": "stage_code",
+   "fieldtype": "Select",
+   "label": "Stage Code",
+   "options": "\nGalvanising\nColour Coating\nEmbossing\nCTL\nCorrugation\nProfile"
+  },
+  {
+   "fieldname": "stage_mappings",
+   "fieldtype": "Table",
+   "label": "Input / Output Mapping",
+   "options": "Stage Input Output Mapping"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-15 01:57:53.385195",
+ "modified": "2026-05-18 16:29:10.000000",
  "modified_by": "Administrator",
  "module": "Manakshia Steel",
  "name": "Process",

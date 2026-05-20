@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-19 06:07:56.850130",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "supplier",
+  "pkage_no",
+  "coil_no",
+  "thick",
+  "width",
+  "length",
+  "chln_net_wt",
+  "minl_gr_wt",
+  "sleeve_wt",
+  "scrap_wt",
+  "fc"
+ ],
+ "fields": [
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "pkage_no",
+   "fieldtype": "Data",
+   "label": "Pkage No."
+  },
+  {
+   "fieldname": "coil_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Coil No. (Serial)",
+   "options": "Serial No",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "thick",
+   "fieldtype": "Float",
+   "label": "Thick"
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Float",
+   "label": "Width"
+  },
+  {
+   "fieldname": "length",
+   "fieldtype": "Float",
+   "label": "Length"
+  },
+  {
+   "fieldname": "chln_net_wt",
+   "fieldtype": "Float",
+   "label": "Chln Net Wt"
+  },
+  {
+   "fieldname": "minl_gr_wt",
+   "fieldtype": "Float",
+   "label": "MINL Gr Wt"
+  },
+  {
+   "fieldname": "sleeve_wt",
+   "fieldtype": "Float",
+   "label": "Sleeve Wt"
+  },
+  {
+   "fieldname": "scrap_wt",
+   "fieldtype": "Float",
+   "label": "Scrap Wt"
+  },
+  {
+   "fieldname": "fc",
+   "fieldtype": "Data",
+   "label": "FC"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-19 06:07:56.850130",
+ "modified_by": "Administrator",
+ "module": "Steel Manufacturing",
+ "name": "Galvanized Coil Entry",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

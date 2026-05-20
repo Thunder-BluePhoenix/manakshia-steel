@@ -1,0 +1,22 @@
+{
+ "app": "manakshia_steel",
+ "bg_color": "gray",
+ "creation": "2026-04-24 10:03:35.088329",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "procurement",
+ "icon_type": "Link",
+ "idx": 0,
+ "label": "Procurement",
+ "link_to": "Procurement",
+ "link_type": "Workspace Sidebar",
+ "modified": "2026-05-19 07:35:09.523630",
+ "modified_by": "Administrator",
+ "name": "Procurement",
+ "owner": "Administrator",
+ "restrict_removal": 0,
+ "roles": [],
+ "sidebar": "Procurement",
+ "standard": 1
+}

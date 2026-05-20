@@ -1,0 +1,22 @@
+{
+ "app": "manakshia_steel",
+ "bg_color": "gray",
+ "creation": "2026-05-19 06:53:42.656201",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "steel-manufacturing",
+ "icon_type": "Link",
+ "idx": 0,
+ "label": "Steel Manufacturing",
+ "link_to": "Steel Manufacturing",
+ "link_type": "Workspace Sidebar",
+ "modified": "2026-05-19 07:35:09.542602",
+ "modified_by": "Administrator",
+ "name": "Steel Manufacturing",
+ "owner": "Administrator",
+ "restrict_removal": 0,
+ "roles": [],
+ "sidebar": "Steel Manufacturing",
+ "standard": 1
+}

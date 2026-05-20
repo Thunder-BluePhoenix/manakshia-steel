@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-19 06:07:57.528600",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "gp_coil_no",
+  "thick",
+  "width",
+  "gross_wt",
+  "net_wt",
+  "sleeve_wt",
+  "brand",
+  "length_mtr",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "gp_coil_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "GP Coil No.",
+   "reqd": 1
+  },
+  {
+   "fieldname": "thick",
+   "fieldtype": "Float",
+   "label": "Thick"
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Width"
+  },
+  {
+   "fieldname": "gross_wt",
+   "fieldtype": "Float",
+   "label": "Gross Wt"
+  },
+  {
+   "fieldname": "net_wt",
+   "fieldtype": "Float",
+   "label": "Net Wt"
+  },
+  {
+   "fieldname": "sleeve_wt",
+   "fieldtype": "Float",
+   "label": "Sleeve Wt"
+  },
+  {
+   "fieldname": "brand",
+   "fieldtype": "Data",
+   "label": "Brand"
+  },
+  {
+   "fieldname": "length_mtr",
+   "fieldtype": "Float",
+   "label": "Length(Mtr)"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Data",
+   "label": "Remarks"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-19 06:07:57.528600",
+ "modified_by": "Administrator",
+ "module": "Steel Manufacturing",
+ "name": "Galvanized Coil Exit",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -7,7 +7,7 @@
 # passes Frappe's validate_series() check when a doc is saved or amended.
 
 import frappe
-from frappe.utils import getdate, nowdate
+
 from manakshia_steel.api.doc_naming import PR_PREFIX, _inject_meta
 
 
@@ -22,6 +22,7 @@ def _inject_if_custom(doc):
     fy = frappe.defaults.get_user_default("fiscal_year")
     if not fy:
         from frappe.utils import getdate, nowdate
+
         fy = str(getdate(doc.posting_date or nowdate()).year)
 
     series = f"{pfx}/{fy}/.#####"

@@ -1,4 +1,5 @@
 {
+ "app": "manakshia_steel",
  "charts": [
   {
    "chart_name": "Monthly Purchase Value",
@@ -16,13 +17,13 @@
  "doctype": "Workspace",
  "for_user": "",
  "hide_custom": 0,
- "icon": "table_2",
+ "icon": "procurement",
  "idx": 0,
  "indicator_color": "cyan",
  "is_hidden": 0,
  "label": "Procurement",
  "links": [],
- "modified": "2025-06-18 01:16:51.630749",
+ "modified": "2026-05-19 12:21:55.167917",
  "modified_by": "Administrator",
  "module": "Manakshia Steel",
  "name": "Procurement",
@@ -80,5 +81,6 @@
    "type": "DocType"
   }
  ],
- "title": "Procurement"
+ "title": "Procurement",
+ "type": "Workspace"
 }

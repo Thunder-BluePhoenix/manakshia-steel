@@ -1,19 +1,19 @@
 {
  "app": "manakshia_steel",
  "charts": [],
- "content": "[]",
+ "content": "[{\"id\":\"hdr_quick\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Quick Actions</b></span>\",\"col\":12}},{\"id\":\"sc_grn\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New GRN\",\"col\":3}},{\"id\":\"sc_grn_ret\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New GRN Return\",\"col\":3}},{\"id\":\"sc_waybill\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Waybill\",\"col\":3}},{\"id\":\"sc_waybill_ret\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Waybill Return\",\"col\":3}},{\"id\":\"sc_issue\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Issue\",\"col\":3}},{\"id\":\"sc_receipt\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Receipt\",\"col\":3}},{\"id\":\"sc_sti\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Stock Transfer In\",\"col\":3}},{\"id\":\"sc_sto\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Stock Transfer Out\",\"col\":3}},{\"id\":\"sc_adj\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Adjustment\",\"col\":3}},{\"id\":\"sc_po\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Production Order\",\"col\":3}}]",
  "creation": "2026-03-13 14:36:46.467154",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "hide_custom": 0,
+ "icon": "inventory-control",
  "idx": 0,
- "indicator_color": "green",
+ "indicator_color": "orange",
  "is_hidden": 0,
  "label": "Inventory Control",
- "link_type": "DocType",
  "links": [],
- "modified": "2026-03-13 16:31:07.781232",
+ "modified": "2026-12-31 23:59:59.000000",
  "modified_by": "Administrator",
  "module": "Manakshia Steel",
  "name": "Inventory Control",
@@ -23,7 +23,78 @@
  "quick_lists": [],
  "roles": [],
  "sequence_id": 0.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "color": "Orange",
+   "label": "New GRN",
+   "type": "URL",
+   "url": "/app/purchase-receipt/new",
+   "link_to": ""
+  },
+  {
+   "color": "Red",
+   "label": "New GRN Return",
+   "type": "URL",
+   "url": "/app/purchase-receipt/new-return",
+   "link_to": ""
+  },
+  {
+   "color": "Blue",
+   "label": "New Waybill",
+   "type": "URL",
+   "url": "/app/waybill/new",
+   "link_to": ""
+  },
+  {
+   "color": "Teal",
+   "label": "New Waybill Return",
+   "type": "URL",
+   "url": "/app/waybill-return/new",
+   "link_to": ""
+  },
+  {
+   "color": "Grey",
+   "label": "New Issue",
+   "type": "URL",
+   "url": "/app/stock-entry/new-issue",
+   "link_to": ""
+  },
+  {
+   "color": "Green",
+   "label": "New Receipt",
+   "type": "URL",
+   "url": "/app/stock-entry/new-receipt",
+   "link_to": ""
+  },
+  {
+   "color": "Purple",
+   "label": "New Stock Transfer In",
+   "type": "URL",
+   "url": "/app/stock-entry/new-transfer-in",
+   "link_to": ""
+  },
+  {
+   "color": "Yellow",
+   "label": "New Stock Transfer Out",
+   "type": "URL",
+   "url": "/app/stock-entry/new-transfer-out",
+   "link_to": ""
+  },
+  {
+   "color": "Pink",
+   "label": "New Adjustment",
+   "type": "URL",
+   "url": "/app/adjustment/new",
+   "link_to": ""
+  },
+  {
+   "color": "Cyan",
+   "label": "New Production Order",
+   "type": "URL",
+   "url": "/app/production-order/new",
+   "link_to": ""
+  }
+ ],
  "title": "Inventory Control",
  "type": "Workspace"
 }

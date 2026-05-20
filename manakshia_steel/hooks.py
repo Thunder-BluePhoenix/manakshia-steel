@@ -30,6 +30,7 @@ app_include_js = [
     "/assets/manakshia_steel/js/child_table_auto_row.js",
     "/assets/manakshia_steel/js/fiscal_year_defaults.js",
     "/assets/manakshia_steel/js/workspace.js",
+    "/assets/manakshia_steel/js/sm_utils.js",
 ]
 
 doctype_js = {
@@ -71,10 +72,7 @@ doc_events = {
         # autoname_stock_entry handles year + Issue/Receipt/STI/STO series.
         # fix_naming_year no longer needed here.
         "autoname": f"{_dn}.autoname_stock_entry",
-        "validate": [
-            _validate_fiscal_year,
-            _validate_warehouse
-        ],
+        "validate": [_validate_fiscal_year, _validate_warehouse],
         "before_validate": [
             "manakshia_steel.api.stock_entry_custom.suppress_serial_batch_on_stock_entry",
             "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict",
@@ -88,7 +86,7 @@ doc_events = {
         "validate": [
             "manakshia_steel.overrides.purchase_receipt_hooks.validate",
             _validate_fiscal_year,
-            _validate_warehouse
+            _validate_warehouse,
         ],
         "before_save": "manakshia_steel.overrides.purchase_receipt_hooks.before_save",
     },
@@ -96,32 +94,20 @@ doc_events = {
     # No custom series — keep fix_naming_year so MAT-DN-.YYYY.- uses document date.
     "Delivery Note": {
         "before_naming": "manakshia_steel.api.fiscal_year_hooks.fix_naming_year",
-        "validate": [
-            _validate_fiscal_year,
-            _validate_warehouse
-        ],
+        "validate": [_validate_fiscal_year, _validate_warehouse],
     },
     # ── ERPNext buying DocTypes ────────────────────────────────────────────────
     "Purchase Order": {
         "autoname": f"{_dn}.autoname_purchase_order",
-        "validate": [
-            _validate_fiscal_year,
-            _validate_warehouse
-        ],
+        "validate": [_validate_fiscal_year, _validate_warehouse],
     },
     "Material Request": {
         "autoname": f"{_dn}.autoname_material_request",
-        "validate": [
-            _validate_fiscal_year,
-            _validate_warehouse
-        ],
+        "validate": [_validate_fiscal_year, _validate_warehouse],
     },
     "Supplier Quotation": {
         "autoname": f"{_dn}.autoname_supplier_quotation",
-        "validate": [
-            _validate_fiscal_year,
-            _validate_warehouse
-        ],
+        "validate": [_validate_fiscal_year, _validate_warehouse],
     },
     "Request for Quotation": {
         "autoname": f"{_dn}.autoname_rfq",
@@ -142,10 +128,17 @@ doc_events = {
     "Production Order": {
         "autoname": f"{_dn}.autoname_production_order",
     },
-    # ── Subcontracting ─────────────────────────────────────────────────────────
+    # ── Subcontracting ───────────────────────────────────────────────────────────
     "Subcontracting Receipt": {
         "before_validate": "manakshia_steel.api.warehouse_fix.validate_warehouse_conflict",
     },
+    # ── 6 Steel Manufacturing Production Doctypes ───────────────────────
+    "Galvanized Coil Production": {"autoname": f"{_dn}.autoname_manufacturing"},
+    "CC Coil Production": {"autoname": f"{_dn}.autoname_manufacturing"},
+    "Embossed Coil Production": {"autoname": f"{_dn}.autoname_manufacturing"},
+    "CTL Production": {"autoname": f"{_dn}.autoname_manufacturing"},
+    "Colour Profile Production": {"autoname": f"{_dn}.autoname_manufacturing"},
+    "Corrugated Sheet Production": {"autoname": f"{_dn}.autoname_manufacturing"},
 }
 
 # include js, css files in header of web template
@@ -191,29 +184,30 @@ fixtures = [
     {
         "dt": "Property Setter",
         "filters": [
-            ["name", "in", [
-                # Purchase Receipt bulk edit
-                "Purchase Receipt-custom_packing_slip-allow_bulk_edit",
-
-                # ── title_field cleared → document number (name) shown as first column ──
-                "Stock Entry-main-title_field",
-                "Purchase Receipt-main-title_field",
-                "Purchase Receipt Return-main-title_field",
-                "Material Request-main-title_field",
-                "Supplier Quotation-main-title_field",
-                "Purchase Order-main-title_field",
-
-                # ── naming_series template column hidden from list view ──
-                "Adjustment-naming_series-in_list_view",
-                "Waybill-naming_series-in_list_view",
-                "Waybill Return-naming_series-in_list_view",
-                "Production Order-naming_series-in_list_view",
-                "Purchase Receipt Return-naming_series-in_list_view",
-
-                # ── Stock Entry type/purpose columns removed (prefix tells the type) ──
-                "Stock Entry-stock_entry_type-in_list_view",
-                "Stock Entry-purpose-in_list_view",
-            ]]
+            [
+                "name",
+                "in",
+                [
+                    # Purchase Receipt bulk edit
+                    "Purchase Receipt-custom_packing_slip-allow_bulk_edit",
+                    # ── title_field cleared → document number (name) shown as first column ──
+                    "Stock Entry-main-title_field",
+                    "Purchase Receipt-main-title_field",
+                    "Purchase Receipt Return-main-title_field",
+                    "Material Request-main-title_field",
+                    "Supplier Quotation-main-title_field",
+                    "Purchase Order-main-title_field",
+                    # ── naming_series template column hidden from list view ──
+                    "Adjustment-naming_series-in_list_view",
+                    "Waybill-naming_series-in_list_view",
+                    "Waybill Return-naming_series-in_list_view",
+                    "Production Order-naming_series-in_list_view",
+                    "Purchase Receipt Return-naming_series-in_list_view",
+                    # ── Stock Entry type/purpose columns removed (prefix tells the type) ──
+                    "Stock Entry-stock_entry_type-in_list_view",
+                    "Stock Entry-purpose-in_list_view",
+                ],
+            ]
         ],
     },
     {"dt": "Custom HTML Block"},
@@ -286,6 +280,13 @@ permission_query_conditions = {
     "Purchase Receipt Return": f"{_pqc}.pqc_purchase_receipt_return",
     "Waybill": f"{_pqc}.pqc_waybill",
     "Waybill Return": f"{_pqc}.pqc_waybill_return",
+    # ── 6 Steel Manufacturing Production Doctypes ───────────────────────
+    "Galvanized Coil Production": f"{_pqc}.pqc_galvanized_coil_production",
+    "Embossed Coil Production": f"{_pqc}.pqc_embossed_coil_production",
+    "CC Coil Production": f"{_pqc}.pqc_cc_coil_production",
+    "Colour Profile Production": f"{_pqc}.pqc_colour_profile_production",
+    "Corrugated Sheet Production": f"{_pqc}.pqc_corrugated_sheet_production",
+    "CTL Production": f"{_pqc}.pqc_ctl_production",
 }
 
 has_permission = {
@@ -302,7 +303,15 @@ has_permission = {
     "Purchase Receipt Return": f"{_pqc}.hp_purchase_receipt_return",
     "Waybill": f"{_pqc}.hp_waybill",
     "Waybill Return": f"{_pqc}.hp_waybill_return",
+    # ── 6 Steel Manufacturing Production Doctypes ───────────────────────
+    "Galvanized Coil Production": f"{_pqc}.hp_galvanized_coil_production",
+    "Embossed Coil Production": f"{_pqc}.hp_embossed_coil_production",
+    "CC Coil Production": f"{_pqc}.hp_cc_coil_production",
+    "Colour Profile Production": f"{_pqc}.hp_colour_profile_production",
+    "Corrugated Sheet Production": f"{_pqc}.hp_corrugated_sheet_production",
+    "CTL Production": f"{_pqc}.hp_ctl_production",
 }
+
 
 # DocType Class
 # ---------------

@@ -20,13 +20,18 @@ def login(usr, pwd, warehouse=None, fiscal_year=None):
         msg = str(e)
         if hasattr(frappe.local, "message_log") and frappe.local.message_log:
             import json
+
             try:
-                msgs = [json.loads(m).get("message", "") for m in frappe.local.message_log if m]
+                msgs = [
+                    json.loads(m).get("message", "")
+                    for m in frappe.local.message_log
+                    if m
+                ]
                 if msgs:
                     msg = "\n".join(msgs)
             except Exception:
                 pass
-        
+
         frappe.local.response["message"] = {
             "success_key": 0,
             "message": msg or "An error occurred during login.",
@@ -44,7 +49,10 @@ def login(usr, pwd, warehouse=None, fiscal_year=None):
             frappe.defaults.set_user_default("fiscal_year", fiscal_year)
             frappe.session.data["fiscal_year"] = fiscal_year
     except Exception as e:
-        frappe.log_error(title="Login Defaults Error", message=f"Failed to set defaults for {usr}: {str(e)}")
+        frappe.log_error(
+            title="Login Defaults Error",
+            message=f"Failed to set defaults for {usr}: {str(e)}",
+        )
 
     api_response = {
         "success_key": 1,
